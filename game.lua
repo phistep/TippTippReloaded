@@ -113,6 +113,9 @@ function game:keypressed(key)
 			local hit_bbl = self:get_by_angle(track_bbl, cont.angle, 1)
 			if #hit_bbl > 0 then
 				self.score:add(1)
+				for _, hbbl in ipairs(hit_bbl) do
+					self:remove_by_values(hbbl.angle, hbbl.track)
+				end
 			end
 			cont.pressed = true
 		end
