@@ -10,6 +10,9 @@ local game = {
 	track_distance = 25,
 	total_time = 0,
 	time_between_bobbels = 0.35,
+	fail_degrees = math.rad(1),
+	auto_forward_movement = 0.05,
+	key_forward_movement = math.rad(90),
 	hit_offset = math.rad(5),
 	bobbel_canvas = nil,
 	controller_canvas = nil,
@@ -103,12 +106,14 @@ function game:update(dt)
 	self:terminate_bobbel()
 
 	-- Change controller position
+	self:change_controller_angle(dt * self.auto_forward_movement * -math.exp((math.deg(self.controller[1].angle)) / 180))
+
 	if love.keyboard.isDown('w') then
-		self:change_controller_angle(dt * math.rad(-45))
+		self:change_controller_angle(dt * -self.key_forward_movement)
 	end
 
 	if love.keyboard.isDown('c') then
-		self:change_controller_angle(dt * math.rad(45))
+		self:change_controller_angle(dt * self.key_forward_movement)
 	end
 end
 
@@ -125,6 +130,7 @@ function game:terminate_bobbel()
 	local old_bobbels = self:get_by_angle(self.bobbels, math.rad(360), math.rad(360))
 	for _, bbl in pairs(old_bobbels) do
 		self:remove_by_values(bbl.angle, bbl.track)
+		self:fail()
 	end
 end
 
@@ -147,6 +153,8 @@ function game:keypressed(key)
 				for _, hbbl in ipairs(hit_bbl) do
 					self:remove_by_values(hbbl.angle, hbbl.track)
 				end
+			else
+				self:fail()
 			end
 			cont.pressed = true
 		end
@@ -192,6 +200,11 @@ function game:change_controller_angle(delta_angle)
 			bbl.angle = newangle
 		end
 	end
+end
+
+function game:fail()
+	--self:change_controller_angle(self.fail_degrees)
+	self:change_controller_angle(self.fail_degrees * math.exp((360 - math.deg(self.controller[1].angle)) / 180))
 end
 
 return game
