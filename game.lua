@@ -9,18 +9,25 @@ local game = {
 	total_time = 0,
 	time_between_bobbels = 0.95,
 	bobbel_canvas = nil,
-	bobbels = {}
+	bobbels = {},
+	controler = {Bobbel.create(1.5*math.pi, 0), Bobbel.create(1.5*math.pi, 1), Bobbel.create(1.5*math.pi, 2)}
 }
-
-local bobbels = {}
 
 function game:init()
 	-- create global bobbel canvas
 	self.bobbel_canvas = love.graphics.newCanvas(2 * self.bobbel_radius, 2 * self.bobbel_radius)
 	love.graphics.setCanvas(self.bobbel_canvas)
-	love.graphics.setColor(10, 255, 0)
+	love.graphics.setColor(255, 255, 255)
 	love.graphics.setLineWidth(3)
 	love.graphics.circle("line", self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
+
+	for _, cont in ipairs(self.controler) do
+		cont.pressed = false
+	end
+	self.controler[1].key = 'd'
+	self.controler[2].key = 's'
+	self.controler[3].key = 'a'
+
 
 	-- window settings
 	love.graphics.setCanvas()
@@ -40,22 +47,66 @@ function game:draw()
 	love.graphics.circle("line", self.center.x, self.center.y, self.field_radius - 2*self.track_distance)
 
 	love.graphics.setColor(255, 255, 255)
-	for _, bbl in pairs(bobbels) do
+	for _, bbl in pairs(self.bobbels) do
 		bbl:draw(self)
 	end
 
+	for _, cont in ipairs(self.controler) do
+		if cont.pressed then
+			love.graphics.setColor(255, 0, 0)
+		else
+			love.graphics.setColor(255, 255, 255)
+		end
+		cont:draw(self)
+	end
+
+	love.graphics.setColor(23, 200, 255)
 	love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
 end
 
 function game:update(dt)
+	-- Updating bobbels
+	for _, bbl in pairs(self.bobbels) do
+		bbl:update(self, dt)
+	end
+
+	-- Spawning new bobbels
+	self:spawn_bobbel(dt)
+
+	-- Removing bobbels
+	self:remove_bobbel()
+end
+
+function game:spawn_bobbel(dt)
 	self.total_time = self.total_time + dt
 	if self.total_time >= self.time_between_bobbels then
-		table.insert(bobbels, Bobbel.create(0, math.random(0, 2)))
+		table.insert(self.bobbels, Bobbel.create(0, math.random(0, 2)))
 	end
 	self.total_time = self.total_time % self.time_between_bobbels
+end
 
-	for _, bbl in pairs(bobbels) do
-		bbl:update(self, dt)
+
+function game:remove_bobbel()
+	for bblindex, bbl in pairs(self.bobbels) do
+		if bbl.angle > 2*math.pi then
+			table.remove(self.bobbels, bblindex)
+		end
+	end
+end
+
+function game:keypressed(key)
+	for _, cont in ipairs(self.controler) do
+		if cont.key == key then
+			cont.pressed = true
+		end
+	end
+end
+
+function game:keyreleased(key)
+	for _, cont in ipairs(self.controler) do
+		if cont.key == key then
+			cont.pressed = false
+		end
 	end
 end
 
