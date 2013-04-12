@@ -1,4 +1,5 @@
 require 'bobbel'
+require 'scoreboard'
 
 local game = {
 	bobbel_radius = 15,
@@ -10,7 +11,8 @@ local game = {
 	time_between_bobbels = 0.95,
 	bobbel_canvas = nil,
 	bobbels = {},
-	controller = {Bobbel.create(1.5*math.pi, 0), Bobbel.create(1.5*math.pi, 1), Bobbel.create(1.5*math.pi, 2)}
+	controller = {Bobbel.create(1.5*math.pi, 0), Bobbel.create(1.5*math.pi, 1), Bobbel.create(1.5*math.pi, 2)},
+	score = Scoreboard.create(),
 }
 
 function game:init()
@@ -63,6 +65,7 @@ function game:draw()
 
 	love.graphics.setColor(23, 200, 255)
 	love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
+	self.score:draw(10, 30)
 end
 
 function game:update(dt)
