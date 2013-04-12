@@ -89,6 +89,9 @@ function game:draw()
 	love.graphics.setColor(23, 200, 255)
 	love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
 	self.score:draw(10, 30)
+	if self.mute then
+		love.graphics.print("muted, [M] to unmute", 10, 50)
+	end
 end
 
 function game:update(dt)
@@ -160,11 +163,6 @@ function game:keypressed(key)
 	end
 	if key == "m" then
 		self.mute = not self.mute
-		if self.mute then
-			print("Muted")
-		else
-			print("Unmuted")
-		end
 	end
 end
 
