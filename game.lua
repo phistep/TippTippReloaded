@@ -50,16 +50,16 @@ function game:draw()
 	love.graphics.circle("line", self.center.x, self.center.y, self.field_radius - self.track_distance)
 	love.graphics.circle("line", self.center.x, self.center.y, self.field_radius - 2*self.track_distance)
 
-	love.graphics.setColor(255, 255, 255)
+	love.graphics.setColor(10, 255, 0)
 	for _, bbl in pairs(self.bobbels) do
 		bbl:draw(self)
 	end
 
 	for _, cont in ipairs(self.controller) do
 		if cont.pressed then
-			love.graphics.setColor(255, 0, 0)
+			love.graphics.setColor(4, 215, 243)
 		else
-			love.graphics.setColor(255, 255, 255)
+			love.graphics.setColor(100, 100, 100)
 		end
 		cont:draw(self)
 	end
