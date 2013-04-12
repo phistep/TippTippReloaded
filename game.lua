@@ -6,15 +6,15 @@ local game = {
 	bobbel_radius = 15,
 	field_radius = 200,
 	center = { x = 300, y = 300 },
-	angular_velocity = 65 /180*math.pi,
+	angular_velocity = math.rad(65),
 	track_distance = 25,
 	total_time = 0,
 	time_between_bobbels = 0.35,
-	hit_offset = 5 /180*math.pi,
+	hit_offset = math.rad(5),
 	bobbel_canvas = nil,
 	controller_canvas = nil,
 	bobbels = {},
-	controller = {Bobbel.create(1.5*math.pi, 0), Bobbel.create(1.5*math.pi, 1), Bobbel.create(1.5*math.pi, 2)},
+	controller = {Bobbel.create(math.rad(270), 0), Bobbel.create(math.rad(270), 1), Bobbel.create(math.rad(270), 2)},
 	score = Scoreboard.create(),
 	synth = nil,
 }
@@ -82,7 +82,7 @@ function game:draw()
 
 	for i=20, 0, -1 do
 		love.graphics.setColor(10, 10, 10, 255/5)
-		love.graphics.arc("fill", self.center.x, self.center.y, self.field_radius*1.25, (90-i)/180*math.pi, (90+i)/180*math.pi, 100)
+		love.graphics.arc("fill", self.center.x, self.center.y, self.field_radius*1.25, math.rad(90-i), math.rad(90+i), 100)
 	end
 
 	love.graphics.setColor(23, 200, 255)
@@ -122,7 +122,7 @@ end
 
 
 function game:terminate_bobbel()
-	local old_bobbels = self:get_by_angle(self.bobbels, 2*math.pi, 2*math.pi)
+	local old_bobbels = self:get_by_angle(self.bobbels, math.rad(360), math.rad(360))
 	for _, bbl in pairs(old_bobbels) do
 		self:remove_by_values(bbl.angle, bbl.track)
 	end
