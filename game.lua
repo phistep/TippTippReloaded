@@ -1,5 +1,6 @@
 require 'bobbel'
 require 'scoreboard'
+require 'synth'
 
 local game = {
 	bobbel_radius = 15,
@@ -11,9 +12,11 @@ local game = {
 	time_between_bobbels = 0.35,
 	hit_offset = 5 /180*math.pi,
 	bobbel_canvas = nil,
+	controller_canvas = nil,
 	bobbels = {},
 	controller = {Bobbel.create(1.5*math.pi, 0), Bobbel.create(1.5*math.pi, 1), Bobbel.create(1.5*math.pi, 2)},
 	score = Scoreboard.create(),
+	synth = nil,
 }
 
 function game:init()
@@ -25,6 +28,12 @@ function game:init()
 	love.graphics.setLineWidth(3)
 	love.graphics.circle("line", self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
 
+	-- create global controller canvas
+	self.controller_canvas = love.graphics.newCanvas(2 * self.bobbel_radius, 2 * self.bobbel_radius)
+	love.graphics.setCanvas(self.controller_canvas)
+	love.graphics.setColor(255, 255, 255)
+	love.graphics.circle("fill", self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-4, 20)
+	
 	-- create controller bobbels
 	for _, cont in ipairs(self.controller) do
 		cont.pressed = false
@@ -39,6 +48,9 @@ function game:init()
 	love.graphics.setBackgroundColor(10, 10, 10)
 	love.graphics.setLineStyle("smooth")
 	love.graphics.setLineWidth(1)
+
+	-- sound stuff
+	self.synth = Synth.create()
 end
 
 function game:enter(game_menu)
@@ -65,7 +77,7 @@ function game:draw()
 		else
 			love.graphics.setColor(100, 100, 100)
 		end
-		cont:draw(self)
+		cont:draw(self, self.controller_canvas)
 	end
 
 	love.graphics.setColor(23, 200, 255)
@@ -117,6 +129,7 @@ function game:keypressed(key)
 			local hit_bbl = self:get_by_angle(track_bbl, cont.angle - self.hit_offset, 2*self.hit_offset)
 			if #hit_bbl > 0 then
 				self.score:add(1)
+				self.synth:play()
 				for _, hbbl in ipairs(hit_bbl) do
 					self:remove_by_values(hbbl.angle, hbbl.track)
 				end
