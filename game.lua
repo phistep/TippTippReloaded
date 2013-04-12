@@ -11,6 +11,7 @@ local game = {
 	time_between_bobbels = 0.95,
 	hit_offset = 5 / 180 * math.pi,
 	bobbel_canvas = nil,
+	controller_canvas = nil,
 	bobbels = {},
 	controller = {Bobbel.create(1.5*math.pi, 0), Bobbel.create(1.5*math.pi, 1), Bobbel.create(1.5*math.pi, 2)},
 	score = Scoreboard.create(),
@@ -25,6 +26,12 @@ function game:init()
 	love.graphics.setLineWidth(3)
 	love.graphics.circle("line", self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
 
+	-- create global controller canvas
+	self.controller_canvas = love.graphics.newCanvas(2 * self.bobbel_radius, 2 * self.bobbel_radius)
+	love.graphics.setCanvas(self.controller_canvas)
+	love.graphics.setColor(255, 255, 255)
+	love.graphics.circle("fill", self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-4, 20)
+	
 	-- create controller bobbels
 	for _, cont in ipairs(self.controller) do
 		cont.pressed = false
@@ -65,7 +72,7 @@ function game:draw()
 		else
 			love.graphics.setColor(100, 100, 100)
 		end
-		cont:draw(self)
+		cont:draw(self, self.controller_canvas)
 	end
 
 	love.graphics.setColor(23, 200, 255)

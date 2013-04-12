@@ -9,9 +9,11 @@ function Bobbel.create(angle, track)
 	return bbl
 end
 
-function Bobbel:draw(state)
+function Bobbel:draw(state, bobbel_canvas)
+	bobbel_canvas = bobbel_canvas or state.bobbel_canvas
+
 	love.graphics.draw(
-		state.bobbel_canvas,
+		bobbel_canvas,
 		state.center.x, state.center.y,
 		self.angle, 1, 1,
 		state.bobbel_radius,
