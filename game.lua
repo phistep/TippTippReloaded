@@ -20,6 +20,7 @@ local game = {
 	controller = {Bobbel.create(math.rad(270), 0), Bobbel.create(math.rad(270), 1), Bobbel.create(math.rad(270), 2)},
 	score = Scoreboard.create(),
 	synth = nil,
+	mute = false,
 }
 
 function game:init()
@@ -36,7 +37,7 @@ function game:init()
 	love.graphics.setCanvas(self.controller_canvas)
 	love.graphics.setColor(255, 255, 255)
 	love.graphics.circle("fill", self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-4, 20)
-	
+
 	-- create controller bobbels
 	for _, cont in ipairs(self.controller) do
 		cont.pressed = false
@@ -91,6 +92,9 @@ function game:draw()
 	love.graphics.setColor(23, 200, 255)
 	love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
 	self.score:draw(10, 30)
+	if self.mute then
+		love.graphics.print("muted, [M] to unmute", 10, 70)
+	end
 end
 
 function game:update(dt)
@@ -148,10 +152,12 @@ function game:keypressed(key)
 			local track_bbl = self:get_by_track(self.bobbels, cont.track)
 			local hit_bbl = self:get_by_angle(track_bbl, cont.angle - self.hit_offset, 2*self.hit_offset)
 			if #hit_bbl > 0 then
-				self.score:add(1)
-				self.synth:play()
+				self.score:count_hit()
 				for _, hbbl in ipairs(hit_bbl) do
 					self:remove_by_values(hbbl.angle, hbbl.track)
+					if not self.mute then
+						self.synth:play(hbbl.track)
+					end
 				end
 			else
 				self:fail()
@@ -162,6 +168,9 @@ function game:keypressed(key)
 
 	if key == "escape" then
 		Gamestate.switch(self.menu)
+	end
+	if key == "m" then
+		self.mute = not self.mute
 	end
 end
 
@@ -205,6 +214,7 @@ end
 function game:fail()
 	--self:change_controller_angle(self.fail_degrees)
 	self:change_controller_angle(self.fail_degrees * math.exp((360 - math.deg(self.controller[1].angle)) / 180))
+	self.score:count_miss()
 end
 
 return game
