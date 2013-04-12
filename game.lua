@@ -78,7 +78,7 @@ function game:update(dt)
 	self:spawn_bobbel(dt)
 
 	-- Removing bobbels
-	self:remove_bobbel()
+	self:terminate_bobbel()
 end
 
 function game:spawn_bobbel(dt)
@@ -90,9 +90,17 @@ function game:spawn_bobbel(dt)
 end
 
 
-function game:remove_bobbel()
-	for bblindex, bbl in pairs(self.bobbels) do
+function game:terminate_bobbel()
+	for _, bbl in pairs(self.bobbels) do
 		if bbl.angle > 2*math.pi then
+			self:remove_by_values(bbl.angle, bbl.track)
+		end
+	end
+end
+
+function game:remove_by_values(angle, track)
+	for bblindex, bbl in ipairs(self.bobbels) do
+		if bbl.angle == angle and bbl.track == track then
 			table.remove(self.bobbels, bblindex)
 		end
 	end
