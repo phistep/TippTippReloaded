@@ -143,13 +143,15 @@ function game:keypressed(key)
 			local track_bbl = self:get_by_track(self.bobbels, cont.track)
 			local hit_bbl = self:get_by_angle(track_bbl, cont.angle - self.hit_offset, 2*self.hit_offset)
 			if #hit_bbl > 0 then
-				self.score:add(1)
+				self.score:count_hit()
 				for _, hbbl in ipairs(hit_bbl) do
 					self:remove_by_values(hbbl.angle, hbbl.track)
 					if not self.mute then
 						self.synth:play(hbbl.track)
 					end
 				end
+			else
+				self.score:count_miss()
 			end
 			cont.pressed = true
 		end
