@@ -31,13 +31,7 @@ function love.draw()
 
 	love.graphics.setColor(255, 255, 255)
 	for _, bbl in pairs(bobbels) do
-		love.graphics.draw(
-			state.bobbel_canvas,
-			state.center.x, state.center.y,
-			bbl.angle, 1, 1,
-			state.bobbel_radius,
-			-(state.field_radius - bbl.track * state.track_distance - state.bobbel_radius)
-		)
+		bbl:draw()
 	end
 
 	love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
@@ -45,6 +39,6 @@ end
 
 function love.update(dt)
 	for _, bbl in pairs(bobbels) do
-		bbl.angle = bbl.angle + state.angular_velocity * dt
+		bbl:update(dt)
 	end
 end
