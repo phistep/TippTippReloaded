@@ -9,6 +9,7 @@ local game = {
 	track_distance = 25,
 	total_time = 0,
 	time_between_bobbels = 0.95,
+	hit_offset = 5 / 180 * math.pi,
 	bobbel_canvas = nil,
 	bobbels = {},
 	controller = {Bobbel.create(1.5*math.pi, 0), Bobbel.create(1.5*math.pi, 1), Bobbel.create(1.5*math.pi, 2)},
@@ -91,10 +92,9 @@ end
 
 
 function game:terminate_bobbel()
-	for _, bbl in pairs(self.bobbels) do
-		if bbl.angle > 2*math.pi then
-			self:remove_by_values(bbl.angle, bbl.track)
-		end
+	local old_bobbels = self:get_by_angle(self.bobbels, 2*math.pi, 2*math.pi)
+	for _, bbl in pairs(old_bobbels) do
+		self:remove_by_values(bbl.angle, bbl.track)
 	end
 end
 
@@ -110,7 +110,7 @@ function game:keypressed(key)
 	for _, cont in ipairs(self.controller) do
 		if cont.key == key then
 			local track_bbl = self:get_by_track(self.bobbels, cont.track)
-			local hit_bbl = self:get_by_angle(track_bbl, cont.angle, 1)
+			local hit_bbl = self:get_by_angle(track_bbl, cont.angle - self.hit_offset, 2*self.hit_offset)
 			if #hit_bbl > 0 then
 				self.score:add(1)
 				for _, hbbl in ipairs(hit_bbl) do
@@ -143,7 +143,7 @@ end
 function game:get_by_angle(bobbels, angle, range)
 	local ret_bbls = {}
 	for _, bbl in pairs(bobbels) do
-		if bbl.angle <= angle + range and bbl.angle >= angle - range then
+		if bbl.angle >= angle and bbl.angle <= angle + range then
 			table.insert(ret_bbls, bbl)
 		end
 	end
