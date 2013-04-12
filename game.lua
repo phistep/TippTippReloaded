@@ -54,6 +54,8 @@ function game:draw()
 	love.graphics.circle("line", self.center.x, self.center.y, self.field_radius - self.track_distance)
 	love.graphics.circle("line", self.center.x, self.center.y, self.field_radius - 2*self.track_distance)
 
+	love.graphics.line(self.center.x, self.center.y + self.field_radius/2, self.center.x, self.center.y + self.field_radius*1.25)
+
 	love.graphics.setColor(0, 255, 0)
 	for _, bbl in pairs(self.bobbels) do
 		bbl:draw(self)
