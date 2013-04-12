@@ -104,11 +104,11 @@ function game:update(dt)
 
 	-- Change controller position
 	if love.keyboard.isDown('w') then
-		self:change_controller_angle(dt * -45 /180*math.pi)
+		self:change_controller_angle(dt * math.rad(-45))
 	end
 
 	if love.keyboard.isDown('c') then
-		self:change_controller_angle(dt * 45 /180*math.pi)
+		self:change_controller_angle(dt * math.rad(45))
 	end
 end
 
@@ -187,7 +187,10 @@ end
 
 function game:change_controller_angle(delta_angle)
 	for _, bbl in ipairs(self.controller) do
-		bbl.angle = bbl.angle + delta_angle
+		local newangle = bbl.angle + delta_angle
+		if newangle > 0 and newangle < math.rad(360) then
+			bbl.angle = newangle
+		end
 	end
 end
 
