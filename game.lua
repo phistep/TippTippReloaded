@@ -10,7 +10,7 @@ local game = {
 	time_between_bobbels = 0.95,
 	bobbel_canvas = nil,
 	bobbels = {},
-	controler = {Bobbel.create(1.5*math.pi, 0), Bobbel.create(1.5*math.pi, 1), Bobbel.create(1.5*math.pi, 2)}
+	controller = {Bobbel.create(1.5*math.pi, 0), Bobbel.create(1.5*math.pi, 1), Bobbel.create(1.5*math.pi, 2)}
 }
 
 function game:init()
@@ -21,12 +21,13 @@ function game:init()
 	love.graphics.setLineWidth(3)
 	love.graphics.circle("line", self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
 
-	for _, cont in ipairs(self.controler) do
+	-- create controller bobbels
+	for _, cont in ipairs(self.controller) do
 		cont.pressed = false
 	end
-	self.controler[1].key = 'd'
-	self.controler[2].key = 's'
-	self.controler[3].key = 'a'
+	self.controller[1].key = 'd'
+	self.controller[2].key = 's'
+	self.controller[3].key = 'a'
 
 
 	-- window settings
@@ -51,7 +52,7 @@ function game:draw()
 		bbl:draw(self)
 	end
 
-	for _, cont in ipairs(self.controler) do
+	for _, cont in ipairs(self.controller) do
 		if cont.pressed then
 			love.graphics.setColor(255, 0, 0)
 		else
@@ -95,19 +96,44 @@ function game:remove_bobbel()
 end
 
 function game:keypressed(key)
-	for _, cont in ipairs(self.controler) do
+	for _, cont in ipairs(self.controller) do
 		if cont.key == key then
+			local track_bbl = self:get_by_track(self.bobbels, cont.track)
+			local hit_bbl = self:get_by_angle(track_bbl, cont.angle, 1)
+			if #angle_bbl > 0 then
+				print("hit")
+			end
 			cont.pressed = true
 		end
 	end
 end
 
 function game:keyreleased(key)
-	for _, cont in ipairs(self.controler) do
+	for _, cont in ipairs(self.controller) do
 		if cont.key == key then
 			cont.pressed = false
 		end
 	end
+end
+
+function game:get_by_track(bobbels, track)
+	local ret_bbls = {}
+	for _, bbl in pairs(bobbels) do
+		if bbl.track == track then
+			table.insert(ret_bbls, bbl)
+		end
+	end
+	return ret_bbls
+end
+
+function game:get_by_angle(bobbels, angle, range)
+	local ret_bbls = {}
+	for _, bbl in pairs(bobbels) do
+		if bbl.angle <= angle + range and bbl.angle >= angle - range then
+			table.insert(ret_bbls, bbl)
+		end
+	end
+	return ret_bbls
 end
 
 return game
