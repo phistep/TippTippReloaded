@@ -10,24 +10,32 @@ function Synth.create()
 	local synth = {}
 	setmetatable(synth, Synth)
 
+	synth.sources = {
+		synth:createSource(1),
+		synth:createSource(4),
+		synth:createSource(7),
+	}
+
+	return synth
+end
+
+function Synth:play(track)
+	love.audio.play(self.sources[track + 1])
+end
+
+function Synth:createSource(n)
 	local soundData = love.sound.newSoundData(len * rate, rate, bits, channel)
 	local amplitude = 1.0
-	local osc = Oscillator(get_frequency(1), saw)
-	local osc2 = Oscillator(get_frequency(4), saw)
-	local osc3 = Oscillator(get_frequency(8), saw)
+	local osc = Oscillator(get_frequency(n), saw)
+	local osc2 = Oscillator(get_frequency(n + 3), saw)
+	local osc3 = Oscillator(get_frequency(n + 7), saw)
 
 	for i = 1, len * rate do
 		local sample = amplitude * (osc() + osc2() + osc3()) / 3
 		soundData:setSample(i, sample)
 	end
 
-	synth.source = love.audio.newSource(soundData)
-
-	return synth
-end
-
-function Synth:play()
-	love.audio.play(self.source)
+	return love.audio.newSource(soundData)
 end
 
 function Oscillator(freq, f)
