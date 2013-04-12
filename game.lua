@@ -5,11 +5,11 @@ local game = {
 	bobbel_radius = 15,
 	field_radius = 200,
 	center = { x = 300, y = 300 },
-	angular_velocity = math.pi/4,
+	angular_velocity = 65 /180*math.pi,
 	track_distance = 25,
 	total_time = 0,
-	time_between_bobbels = 0.95,
-	hit_offset = 5 / 180 * math.pi,
+	time_between_bobbels = 0.35,
+	hit_offset = 5 /180*math.pi,
 	bobbel_canvas = nil,
 	bobbels = {},
 	controller = {Bobbel.create(1.5*math.pi, 0), Bobbel.create(1.5*math.pi, 1), Bobbel.create(1.5*math.pi, 2)},
@@ -48,13 +48,13 @@ end
 function game:draw()
 	love.graphics.setCanvas()
 
-	love.graphics.setColor(255, 20, 0)
+	love.graphics.setColor(100, 100, 100)
 	love.graphics.setLineWidth(2)
 	love.graphics.circle("line", self.center.x, self.center.y, self.field_radius)
 	love.graphics.circle("line", self.center.x, self.center.y, self.field_radius - self.track_distance)
 	love.graphics.circle("line", self.center.x, self.center.y, self.field_radius - 2*self.track_distance)
 
-	love.graphics.setColor(10, 255, 0)
+	love.graphics.setColor(0, 255, 0)
 	for _, bbl in pairs(self.bobbels) do
 		bbl:draw(self)
 	end
