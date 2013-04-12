@@ -1,5 +1,13 @@
 require 'bobbel'
-require 'state'
+
+local state = {
+	bobbel_radius = 10,
+	field_radius = 200,
+	center = { x = 300, y = 300 },
+	angular_velocity = math.pi/4,
+	track_distance = 25,
+	bobbel_canvas = nil
+}
 
 local bobbels = {}
 
@@ -31,7 +39,7 @@ function love.draw()
 
 	love.graphics.setColor(255, 255, 255)
 	for _, bbl in pairs(bobbels) do
-		bbl:draw()
+		bbl:draw(state)
 	end
 
 	love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
@@ -39,6 +47,6 @@ end
 
 function love.update(dt)
 	for _, bbl in pairs(bobbels) do
-		bbl:update(dt)
+		bbl:update(state, dt)
 	end
 end

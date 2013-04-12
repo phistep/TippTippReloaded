@@ -9,7 +9,7 @@ function Bobbel.create(angle, track)
 	return bbl
 end
 
-function Bobbel:draw()
+function Bobbel:draw(state)
 	love.graphics.draw(
 		state.bobbel_canvas,
 		state.center.x, state.center.y,
@@ -19,6 +19,6 @@ function Bobbel:draw()
 	)
 end
 
-function Bobbel:update(dt)
+function Bobbel:update(state, dt)
 	self.angle = self.angle + state.angular_velocity * dt
 end
