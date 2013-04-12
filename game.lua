@@ -1,5 +1,6 @@
 require 'bobbel'
 require 'scoreboard'
+require 'synth'
 
 local game = {
 	bobbel_radius = 15,
@@ -13,6 +14,7 @@ local game = {
 	bobbels = {},
 	controller = {Bobbel.create(1.5*math.pi, 0), Bobbel.create(1.5*math.pi, 1), Bobbel.create(1.5*math.pi, 2)},
 	score = Scoreboard.create(),
+	synth = nil,
 }
 
 function game:init()
@@ -37,6 +39,9 @@ function game:init()
 	love.graphics.setBackgroundColor(10, 10, 10)
 	love.graphics.setLineStyle("smooth")
 	love.graphics.setLineWidth(1)
+
+	-- sound stuff
+	self.synth = Synth.create()
 end
 
 
@@ -105,6 +110,7 @@ function game:keypressed(key)
 			local hit_bbl = self:get_by_angle(track_bbl, cont.angle, 1)
 			if #hit_bbl > 0 then
 				self.score:add(1)
+				self.synth:play()
 			end
 			cont.pressed = true
 		end
