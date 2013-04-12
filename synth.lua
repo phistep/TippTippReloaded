@@ -12,10 +12,12 @@ function Synth.create()
 
 	local soundData = love.sound.newSoundData(len * rate, rate, bits, channel)
 	local amplitude = 1.0
-	local osc = Oscillator(220, saw)
+	local osc = Oscillator(get_frequency(1), saw)
+	local osc2 = Oscillator(get_frequency(4), saw)
+	local osc3 = Oscillator(get_frequency(8), saw)
 
 	for i = 1, len * rate do
-		local sample = amplitude * osc()
+		local sample = amplitude * (osc() + osc2() + osc3()) / 3
 		soundData:setSample(i, sample)
 	end
 
@@ -49,4 +51,8 @@ end
 
 function saw(x)
 	return (x % (2 * math.pi)) / (2 * math.pi)
+end
+
+function get_frequency(n)
+	return 440 * math.pow(2, (n - 22)/12)
 end
