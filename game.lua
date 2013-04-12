@@ -80,6 +80,11 @@ function game:draw()
 		cont:draw(self, self.controller_canvas)
 	end
 
+	for i=20, 0, -1 do
+		love.graphics.setColor(10, 10, 10, 255/5)
+		love.graphics.arc("fill", self.center.x, self.center.y, self.field_radius*1.25, (90-i)/180*math.pi, (90+i)/180*math.pi, 100)
+	end
+
 	love.graphics.setColor(23, 200, 255)
 	love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
 	self.score:draw(10, 30)
