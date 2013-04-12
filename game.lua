@@ -101,6 +101,15 @@ function game:update(dt)
 
 	-- Removing bobbels
 	self:terminate_bobbel()
+
+	-- Change controller position
+	if love.keyboard.isDown('w') then
+		self:change_controller_angle(dt * math.rad(-45))
+	end
+
+	if love.keyboard.isDown('c') then
+		self:change_controller_angle(dt * math.rad(45))
+	end
 end
 
 function game:spawn_bobbel(dt)
@@ -174,6 +183,15 @@ function game:get_by_angle(bobbels, angle, range)
 		end
 	end
 	return ret_bbls
+end
+
+function game:change_controller_angle(delta_angle)
+	for _, bbl in ipairs(self.controller) do
+		local newangle = bbl.angle + delta_angle
+		if newangle > 0 and newangle < math.rad(360) then
+			bbl.angle = newangle
+		end
+	end
 end
 
 return game
