@@ -12,14 +12,22 @@ local state = {
 }
 
 local bobbels = {}
+local controler = {Bobbel.create(1.5*math.pi, 0), Bobbel.create(1.5*math.pi, 1), Bobbel.create(1.5*math.pi, 2)}
 
 function love.load()
 	-- create global bobbel canvas
 	state.bobbel_canvas = love.graphics.newCanvas(2 * state.bobbel_radius, 2 * state.bobbel_radius)
 	love.graphics.setCanvas(state.bobbel_canvas)
-	love.graphics.setColor(10, 255, 0)
+	love.graphics.setColor(255, 255, 255)
 	love.graphics.setLineWidth(3)
 	love.graphics.circle("line", state.bobbel_radius, state.bobbel_radius, state.bobbel_radius-5, 20)
+
+	for _, cont in ipairs(controler) do
+		cont.pressed = false
+	end
+	controler[1].key = 'd'
+	controler[2].key = 's'
+	controler[3].key = 'a'
 
 	-- window settings
 	love.graphics.setCanvas()
@@ -43,6 +51,15 @@ function love.draw()
 		bbl:draw(state)
 	end
 
+	for _, cont in ipairs(controler) do
+		if cont.pressed then
+			love.graphics.setColor(255, 0, 0)
+		else
+			love.graphics.setColor(255, 255, 255)
+		end
+		cont:draw(state)
+	end
+
 	love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
 end
 
@@ -55,5 +72,21 @@ function love.update(dt)
 
 	for _, bbl in pairs(bobbels) do
 		bbl:update(state, dt)
+	end
+end
+
+function love.keypressed(key)
+	for _, cont in ipairs(controler) do
+		if cont.key == key then
+			cont.pressed = true
+		end
+	end
+end
+
+function love.keyreleased(key)
+	for _, cont in ipairs(controler) do
+		if cont.key == key then
+			cont.pressed = false
+		end
 	end
 end
