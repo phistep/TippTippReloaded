@@ -1,11 +1,11 @@
-bobbel = {}
-bobbel.__index = bobbel
+Bobbel = {}
+Bobbel.__index = Bobbel
 
 
-function bobbel.create(angle, track)
-   local bbl = {}
-   setmetatable(bbl, bobbel)
-   bbl.angle = angle
-   bbl.track = track
-   return bbl
+function Bobbel.create(angle, track)
+	local bbl = {}
+	setmetatable(bbl, Bobbel)
+	bbl.angle = angle
+	bbl.track = track
+	return bbl
 end
