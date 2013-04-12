@@ -34,7 +34,7 @@ function game:init()
 	love.graphics.setCanvas(self.controller_canvas)
 	love.graphics.setColor(255, 255, 255)
 	love.graphics.circle("fill", self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-4, 20)
-	
+
 	-- create controller bobbels
 	for _, cont in ipairs(self.controller) do
 		cont.pressed = false
@@ -90,7 +90,7 @@ function game:draw()
 	love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
 	self.score:draw(10, 30)
 	if self.mute then
-		love.graphics.print("muted, [M] to unmute", 10, 50)
+		love.graphics.print("muted, [M] to unmute", 10, 70)
 	end
 end
 
