@@ -103,7 +103,7 @@ function game:keypressed(key)
 		if cont.key == key then
 			local track_bbl = self:get_by_track(self.bobbels, cont.track)
 			local hit_bbl = self:get_by_angle(track_bbl, cont.angle, 1)
-			if #angle_bbl > 0 then
+			if #hit_bbl > 0 then
 				print("hit")
 			end
 			cont.pressed = true
