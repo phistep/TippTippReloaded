@@ -6,7 +6,8 @@ local field_radius = 200
 local center = { x = 300, y = 300 }
 local angular_velocity = math.pi/4
 local track_distance = 25
-
+local total_time = 0
+local time_between_bobbels = 0.95
 
 function love.load()
 	-- create global bobbel canvas
@@ -15,10 +16,6 @@ function love.load()
 	love.graphics.setColor(10, 255, 0)
 	love.graphics.setLineWidth(3)
 	love.graphics.circle("line", bobbel_radius, bobbel_radius, bobbel_radius-5, 20)
-	
-	for i=0, 9 do
-		table.insert(bobbels, Bobbel.create((180 + i * 20) / 180 * math.pi, i % 3))
-	end
 	
 	-- window settings
 	love.graphics.setCanvas()
@@ -50,6 +47,12 @@ function love.draw()
 end
 
 function love.update(dt)
+	total_time = total_time + dt
+	if total_time >= time_between_bobbels then
+		table.insert(bobbels, Bobbel.create(0, math.random(0, 2)))
+	end
+	total_time = total_time % time_between_bobbels
+	
 	for _, bbl in pairs(bobbels) do
 		bbl.angle = bbl.angle + angular_velocity * dt
 	end
