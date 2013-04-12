@@ -17,6 +17,7 @@ local game = {
 	controller = {Bobbel.create(math.rad(270), 0), Bobbel.create(math.rad(270), 1), Bobbel.create(math.rad(270), 2)},
 	score = Scoreboard.create(),
 	synth = nil,
+	mute = false,
 }
 
 function game:init()
@@ -145,7 +146,9 @@ function game:keypressed(key)
 				self.score:add(1)
 				for _, hbbl in ipairs(hit_bbl) do
 					self:remove_by_values(hbbl.angle, hbbl.track)
-					self.synth:play(hbbl.track)
+					if not self.mute then
+						self.synth:play(hbbl.track)
+					end
 				end
 			end
 			cont.pressed = true
@@ -154,6 +157,14 @@ function game:keypressed(key)
 
 	if key == "escape" then
 		Gamestate.switch(self.menu)
+	end
+	if key == "m" then
+		self.mute = not self.mute
+		if self.mute then
+			print("Muted")
+		else
+			print("Unmuted")
+		end
 	end
 end
 
