@@ -16,6 +16,7 @@ local game = {
 }
 
 function game:init()
+
 	-- create global bobbel canvas
 	self.bobbel_canvas = love.graphics.newCanvas(2 * self.bobbel_radius, 2 * self.bobbel_radius)
 	love.graphics.setCanvas(self.bobbel_canvas)
@@ -39,6 +40,9 @@ function game:init()
 	love.graphics.setLineWidth(1)
 end
 
+function game:enter(game_menu)
+	self.menu = game_menu
+end
 
 function game:draw()
 	love.graphics.setCanvas()
@@ -108,6 +112,10 @@ function game:keypressed(key)
 			end
 			cont.pressed = true
 		end
+	end
+
+	if key == "escape" then
+		Gamestate.switch(self.menu)
 	end
 end
 
