@@ -47,13 +47,31 @@ function love.draw()
 end
 
 function love.update(dt)
+	-- Updating bobbels
+	for _, bbl in pairs(bobbels) do
+		bbl:update(state, dt)
+	end
+
+	-- Spawning new bobbels
+	spawn_bobbel(state, dt, bobbels)
+
+	-- Removing bobbels
+	remove_bobbel(bobbels)
+end
+
+function spawn_bobbel(state, dt, bobbels)
 	state.total_time = state.total_time + dt
 	if state.total_time >= state.time_between_bobbels then
 		table.insert(bobbels, Bobbel.create(0, math.random(0, 2)))
 	end
 	state.total_time = state.total_time % state.time_between_bobbels
+end
 
-	for _, bbl in pairs(bobbels) do
-		bbl:update(state, dt)
+
+function remove_bobbel(bobbels)
+	for bblindex, bbl in pairs(bobbels) do
+		if bbl.angle > 2*math.pi then
+			table.remove(bobbels, bblindex)
+		end
 	end
 end
