@@ -113,7 +113,13 @@ function game:update(dt)
 	self:terminate_bobbel()
 
 	-- Change controller position
-	self:change_controller_angle(dt * -self.controller_velocity)
+	local movement_modifier = 1
+	if self.controller_velocity > 0 then
+		movement_modifier = math.pow(math.deg(self.controller[1].angle) / 360, 2) + 0.5
+	else
+		movement_modifier = math.pow((360 - math.deg(self.controller[1].angle)) / 360, 2) + 0.5
+	end
+	self:change_controller_angle(dt * -self.controller_velocity * movement_modifier)
 
 	if love.keyboard.isDown('w') then
 		self:change_controller_angle(dt * -self.key_forward_movement)
@@ -228,12 +234,12 @@ function game:hit(hit_bbl)
 			self.synth:play(hbbl.track)
 		end
 	end
-	self:set_controller_velocity(self.controller_velocity + self.hit_acceleration)-- * (math.pow(math.deg(self.controller[1].angle) / 360, 2) + 0.5)
+	self:set_controller_velocity(self.controller_velocity + self.hit_acceleration)
 end
 
 function game:fail()
 	self.score:count_miss()
-	self:set_controller_velocity(self.controller_velocity + self.fail_acceleration)-- * (math.pow((360 - math.deg(self.controller[1].angle)) / 360, 2) + 0.5)
+	self:set_controller_velocity(self.controller_velocity + self.fail_acceleration)
 end
 
 return game
