@@ -9,9 +9,12 @@ local game = {
 	angular_velocity = math.rad(30),
 	track_distance = 25,
 	total_time = 0,
-	time_between_bobbels = 0.65,
-	fail_degrees = math.rad(1),
-	auto_forward_movement = 0.05,
+	time_between_bobbels = 0.9,
+	controller_velocity = 0,
+	hit_acceleration = 0.02,
+	fail_acceleration = -0.04,
+	max_velocity = 3 * 0.02,
+	min_velocity = 8 * -0.02,
 	key_forward_movement = math.rad(90),
 	hit_offset = math.rad(5),
 	bobbel_canvas = nil,
@@ -110,7 +113,7 @@ function game:update(dt)
 	self:terminate_bobbel()
 
 	-- Change controller position
-	self:change_controller_angle(dt * self.auto_forward_movement * -math.exp((math.deg(self.controller[1].angle)) / 180))
+	self:change_controller_angle(dt * -self.controller_velocity)
 
 	if love.keyboard.isDown('w') then
 		self:change_controller_angle(dt * -self.key_forward_movement)
@@ -152,13 +155,7 @@ function game:keypressed(key)
 			local track_bbl = self:get_by_track(self.bobbels, cont.track)
 			local hit_bbl = self:get_by_angle(track_bbl, cont.angle - self.hit_offset, 2*self.hit_offset)
 			if #hit_bbl > 0 then
-				self.score:count_hit()
-				for _, hbbl in ipairs(hit_bbl) do
-					self:remove_by_values(hbbl.angle, hbbl.track)
-					if not self.mute then
-						self.synth:play(hbbl.track)
-					end
-				end
+				self:hit(hit_bbl)
 			else
 				self:fail()
 			end
@@ -207,14 +204,36 @@ function game:change_controller_angle(delta_angle)
 		local newangle = bbl.angle + delta_angle
 		if newangle > 0 and newangle < math.rad(360) then
 			bbl.angle = newangle
+		else
+			controller_velocity = 0
 		end
 	end
 end
 
+function game:set_controller_velocity(new_velocity)
+	if new_velocity < self.min_velocity then
+		self.controller_velocity = self.min_velocity
+	elseif new_velocity <= self.max_velocity then
+		self.controller_velocity = new_velocity
+	else
+		self.controller_velocity = self.max_velocity
+	end
+end
+
+function game:hit(hit_bbl)
+	self.score:count_hit()
+	for _, hbbl in ipairs(hit_bbl) do
+		self:remove_by_values(hbbl.angle, hbbl.track)
+		if not self.mute then
+			self.synth:play(hbbl.track)
+		end
+	end
+	self:set_controller_velocity(self.controller_velocity + self.hit_acceleration)-- * (math.pow(math.deg(self.controller[1].angle) / 360, 2) + 0.5)
+end
+
 function game:fail()
-	--self:change_controller_angle(self.fail_degrees)
-	self:change_controller_angle(self.fail_degrees * math.exp((360 - math.deg(self.controller[1].angle)) / 180))
 	self.score:count_miss()
+	self:set_controller_velocity(self.controller_velocity + self.fail_acceleration)-- * (math.pow((360 - math.deg(self.controller[1].angle)) / 360, 2) + 0.5)
 end
 
 return game
