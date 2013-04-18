@@ -113,13 +113,7 @@ function game:update(dt)
 	self:terminate_bobbel()
 
 	-- Change controller position
-	local movement_modifier = 1
-	if self.controller_velocity > 0 then
-		movement_modifier = math.pow(math.deg(self.controller[1].angle) / 360, 2) + 0.5
-	else
-		movement_modifier = math.pow((360 - math.deg(self.controller[1].angle)) / 360, 2) + 0.5
-	end
-	self:change_controller_angle(dt * -self.controller_velocity * movement_modifier)
+	self:update_controller(dt)
 
 	if love.keyboard.isDown('w') then
 		self:change_controller_angle(dt * -self.key_forward_movement)
@@ -145,6 +139,16 @@ function game:terminate_bobbel()
 		self:remove_by_values(bbl.angle, bbl.track)
 		self:fail()
 	end
+end
+
+function game:update_controller(dt)
+	local movement_modifier = 1
+	if self.controller_velocity > 0 then
+		movement_modifier = math.pow(math.deg(self.controller[1].angle) / 360, 2) + 0.5
+	else
+		movement_modifier = math.pow((360 - math.deg(self.controller[1].angle)) / 360, 2) + 0.5
+	end
+	self:change_controller_angle(dt * -self.controller_velocity * movement_modifier)
 end
 
 function game:remove_by_values(angle, track)
