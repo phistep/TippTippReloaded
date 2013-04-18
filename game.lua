@@ -3,6 +3,7 @@ require 'scoreboard'
 require 'synth'
 
 local game = {
+	debug = true,
 	bobbel_radius = 15,
 	field_radius = 200,
 	center = { x = 300, y = 300 },
@@ -98,11 +99,12 @@ function game:draw()
 	end
 
 	love.graphics.setColor(23, 200, 255)
-	love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
 	self.score:draw(10, 30)
 	if self.mute then
 		love.graphics.print("muted, [M] to unmute", 10, 70)
 	end
+
+	self:debugging_output()
 end
 
 function game:update(dt)
@@ -130,6 +132,9 @@ function game:update(dt)
 	if love.keyboard.isDown('c') then
 		self:change_controller_angle(dt * self.key_forward_movement)
 	end
+
+	-- change values
+	self:debugging_change_values(dt)
 end
 
 function game:update_gamespeed(dt)
@@ -192,6 +197,9 @@ function game:keypressed(key)
 	end
 	if key == "m" then
 		self.mute = not self.mute
+	end
+	if key == "b" then
+		self.debug = not self.debug
 	end
 end
 
@@ -258,6 +266,112 @@ end
 function game:fail()
 	self.score:count_miss()
 	self:set_controller_velocity(self.controller_velocity + self.fail_acceleration)
+end
+
+function game:debugging_output()
+	if self.debug then
+		local xcoord = self.center.x + self.field_radius
+		xcoord = xcoord - 80
+		love.graphics.print("[+] [-] FPS: "..tostring(love.timer.getFPS()), xcoord, 10)
+
+		love.graphics.print("[3] [E] hit_offset: "..tostring(math.deg(self.hit_offset)), xcoord, 40)
+		love.graphics.print("[4] [R] angular_velocity: "..tostring(math.deg(self.angular_velocity)), xcoord, 70)
+		love.graphics.print("[5] [T] angular_velocity_modifier: "..tostring(self.angular_velocity_modifier), xcoord, 90)
+		xcoord = xcoord + 40
+		love.graphics.print("[6] [Y] time_between_bobbels: "..tostring(self.time_between_bobbels), xcoord, 120)
+		love.graphics.print("[7] [U] time_between_bobbels_modifier: "..tostring(self.time_between_bobbels_modifier), xcoord, 140)
+
+		xcoord = xcoord + 60
+		love.graphics.print("[8] [I] controller_velocity: "..tostring(self.controller_velocity), xcoord, 190)
+		love.graphics.print("[9] [O] hit_acceleration: "..tostring(self.hit_acceleration), xcoord, 220)
+		love.graphics.print("[0] [P] fail_acceleration: "..tostring(self.fail_acceleration), xcoord, 240)
+		love.graphics.print("[ - ]  [  max_velocity: "..tostring(self.max_velocity), xcoord, 260)
+		love.graphics.print("[=]  ]  min_velocity: "..tostring(self.min_velocity), xcoord, 280)
+	end
+end
+
+function game:debugging_change_values(dt)
+	if self.debug then
+		-- hit_offset
+		if love.keyboard.isDown('3') then
+			self.hit_offset = self.hit_offset + dt * math.rad(0.5)
+		end
+		if love.keyboard.isDown('e') then
+			self.hit_offset = self.hit_offset - dt * math.rad(0.5)
+		end
+
+		-- angular_velocity
+		if love.keyboard.isDown('4') then
+			self.angular_velocity = self.angular_velocity + dt * 1
+		end
+		if love.keyboard.isDown('r') then
+			self.angular_velocity = self.angular_velocity - dt * 1
+		end
+
+		-- angular_velocity_modifier
+		if love.keyboard.isDown('5') then
+			self.angular_velocity_modifier = self.angular_velocity_modifier + dt * 0.001
+		end
+		if love.keyboard.isDown('t') then
+			self.angular_velocity_modifier = self.angular_velocity_modifier - dt * 0.001
+		end
+
+		-- time_between_bobbels
+		if love.keyboard.isDown('6') then
+			self.time_between_bobbels = self.time_between_bobbels + dt * 0.1
+		end
+		if love.keyboard.isDown('y') then
+			self.time_between_bobbels = self.time_between_bobbels - dt * 0.1
+		end
+
+		-- time_between_bobbels_modifier
+		if love.keyboard.isDown('7') then
+			self.time_between_bobbels_modifier = self.time_between_bobbels_modifier + dt * 0.003
+		end
+		if love.keyboard.isDown('u') then
+			self.time_between_bobbels_modifier = self.time_between_bobbels_modifier - dt * 0.003
+		end
+
+		-- controller_velocity
+		if love.keyboard.isDown('8') then
+			self.controller_velocity = self.controller_velocity + dt * 0.01
+		end
+		if love.keyboard.isDown('i') then
+			self.controller_velocity = self.controller_velocity - dt * 0.01
+		end
+
+		-- hit_acceleration
+		if love.keyboard.isDown('9') then
+			self.hit_acceleration = self.hit_acceleration + dt * 0.01
+		end
+		if love.keyboard.isDown('o') then
+			self.hit_acceleration = self.hit_acceleration - dt * 0.01
+		end
+
+		-- fail_acceleration
+		if love.keyboard.isDown('0') then
+			self.fail_acceleration = self.fail_acceleration + dt * 0.01
+		end
+		if love.keyboard.isDown('p') then
+			self.fail_acceleration = self.fail_acceleration - dt * 0.01
+		end
+
+		-- max_velocity
+		if love.keyboard.isDown('-') then
+			self.max_velocity = self.max_velocity + dt * 0.01
+		end
+		if love.keyboard.isDown('[') then
+			self.max_velocity = self.max_velocity - dt * 0.01
+		end
+
+		-- min_velocity
+		if love.keyboard.isDown('=') then
+			self.min_velocity = self.min_velocity + dt * 0.01
+		end
+		if love.keyboard.isDown(']') then
+			self.min_velocity = self.min_velocity - dt * 0.01
+		end
+	end
 end
 
 return game
