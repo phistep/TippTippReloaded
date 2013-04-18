@@ -146,7 +146,10 @@ end
 function game:spawn_bobbel(dt)
 	self.total_time = self.total_time + dt
 	if self.total_time >= self.time_between_bobbels then
-		table.insert(self.bobbels, Bobbel.create(0, math.random(0, 2)))
+		local randnum = math.random(0, 3)
+		if randnum ~= 3 then
+			table.insert(self.bobbels, Bobbel.create(0, math.random(0, 2)))
+		end
 	end
 	self.total_time = self.total_time % self.time_between_bobbels
 end
