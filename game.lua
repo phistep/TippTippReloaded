@@ -6,17 +6,22 @@ local game = {
 	bobbel_radius = 15,
 	field_radius = 200,
 	center = { x = 300, y = 300 },
-	angular_velocity = math.rad(30),
 	track_distance = 25,
 	total_time = 0,
+
+	hit_offset = math.rad(5),
+	angular_velocity = math.rad(30),
+	angular_velocity_modifier = 0.003,
 	time_between_bobbels = 0.9,
+	time_between_bobbels_modifier = 0.003,
+
 	controller_velocity = 0,
 	hit_acceleration = 0.02,
 	fail_acceleration = -0.04,
 	max_velocity = 3 * 0.02,
 	min_velocity = 8 * -0.02,
 	key_forward_movement = math.rad(90),
-	hit_offset = math.rad(5),
+
 	bobbel_canvas = nil,
 	controller_canvas = nil,
 	bobbels = {},
@@ -101,6 +106,9 @@ function game:draw()
 end
 
 function game:update(dt)
+	-- Updating gamevars
+	self:update_gamespeed(dt)
+
 	-- Updating bobbels
 	for _, bbl in pairs(self.bobbels) do
 		bbl:update(self, dt)
@@ -124,6 +132,12 @@ function game:update(dt)
 	end
 end
 
+function game:update_gamespeed(dt)
+	local modifier = (360 - math.deg(self.controller[1].angle)) / 360 + 0.5
+	self.angular_velocity = self.angular_velocity + dt * self.angular_velocity_modifier * modifier
+	self.time_between_bobbels = self.time_between_bobbels - dt * self.time_between_bobbels_modifier * modifier
+end
+
 function game:spawn_bobbel(dt)
 	self.total_time = self.total_time + dt
 	if self.total_time >= self.time_between_bobbels then
@@ -144,9 +158,9 @@ end
 function game:update_controller(dt)
 	local movement_modifier = 1
 	if self.controller_velocity > 0 then
-		movement_modifier = math.pow(math.deg(self.controller[1].angle) / 360, 2) + 0.5
+		movement_modifier = math.deg(self.controller[1].angle) / 360 + 0.5
 	else
-		movement_modifier = math.pow((360 - math.deg(self.controller[1].angle)) / 360, 2) + 0.5
+		movement_modifier = (360 - math.deg(self.controller[1].angle)) / 360 + 0.5
 	end
 	self:change_controller_angle(dt * -self.controller_velocity * movement_modifier)
 end
