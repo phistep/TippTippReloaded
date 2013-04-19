@@ -31,7 +31,7 @@ local game = {
 	score = Scoreboard.create(),
 	synth = nil,
 	mute = false,
-	spawner = Spawner.create(),
+	spawner = nil,
 }
 
 function game:init()
@@ -66,6 +66,9 @@ function game:init()
 
 	-- sound stuff
 	self.synth = Synth.create()
+
+	-- spawner setup
+	self.spawner = Spawner.create(self.time_between_bobbels)
 end
 
 function game:enter(game_menu)
