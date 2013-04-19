@@ -53,8 +53,8 @@ end
 -- ? ? ?
 -- ? ? ?
 -- ? ? ?
-function Spawner:random()
-	local max_loops = 10
+function Spawner:random(max_loops)
+	max_loops = max_loops or 10
 	local t = self.time - self.last_new_function
 	local gap = self.time_between_bobbels
 	local loops = math.floor(self.last_bobbel / gap)
@@ -74,8 +74,8 @@ end
 -- | O |
 -- | O |
 -- | O |
-function Spawner:linear(track)
-	local max_loops = 10
+function Spawner:linear(max_loops, track)
+	max_loops = max_loops or 10
 	local t = self.time - self.last_new_function
 	local gap = 0.5 * self.time_between_bobbels
 	local loops = math.floor(self.last_bobbel / gap)
@@ -96,8 +96,8 @@ end
 -- | | O
 --
 -- max loops: 3*n
-function Spawner:saw()
-	local max_loops = 12
+function Spawner:saw(max_loops, orientation)
+	max_loops = max_loops or 12
 	local t = self.time - self.last_new_function
 	local gap = 0.5 * self.time_between_bobbels
 	local loops = math.floor(self.last_bobbel / gap)
@@ -110,7 +110,7 @@ function Spawner:saw()
 
 		local track = loops % 4
 		if track ~= 3 then
-			local orientation = math.floor(self.last_new_function % 2)
+			orientation = orientation or math.floor(self.last_new_function % 2)
 			if orientation == 0 then
 				return track
 			else
@@ -127,8 +127,8 @@ end
 -- O | |
 --
 -- max loops: 4*n + 1
-function Spawner:triangle()
-	local max_loops = 9
+function Spawner:triangle(max_loops, orientation)
+	max_loops = max_loops or 9
 	local t = self.time - self.last_new_function
 	local gap = self.time_between_bobbels
 	local loops = math.floor(self.last_bobbel / gap)
@@ -139,7 +139,7 @@ function Spawner:triangle()
 	elseif t >= limit then
 		self.last_bobbel = t
 
-		local orientation = math.floor(self.last_new_function % 2)
+		orientation = orientation or math.floor(self.last_new_function % 2)
 		if orientation == 0 then
 			return math.abs((loops % 4 - 2))
 		else
@@ -152,8 +152,8 @@ end
 -- | O |
 -- O | |
 -- | O |
-function Spawner:oscilator(blank_track)
-	local max_loops = 10
+function Spawner:oscilator(max_loops, blank_track)
+	max_loops = max_loops or 10
 	local t = self.time - self.last_new_function
 	local gap = 0.5 * self.time_between_bobbels
 	local loops = math.floor(self.last_bobbel / gap)
