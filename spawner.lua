@@ -148,7 +148,7 @@ function Spawner:saw()
 			local orientation = math.floor(self.last_new_function % 2)
 			if orientation == 0 then
 				return track
-			elseif orientation == 1 then
+			else
 				return 2 - track
 			end
 		end
@@ -174,6 +174,11 @@ function Spawner:triangle()
 	elseif t >= limit then
 		self.last_bobbel = t
 
-		return math.abs((loops % 4 - 2))
+		local orientation = math.floor(self.last_new_function % 2)
+		if orientation == 0 then
+			return math.abs((loops % 4 - 2))
+		else
+			return 2 - math.abs((loops % 4 - 2))
+		end
 	end
 end
