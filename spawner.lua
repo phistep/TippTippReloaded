@@ -43,11 +43,11 @@ function Spawner:update(dt, time_between_bobbels)
 end
 
 function Spawner:new_bobbel_track()
-	local track, terminated = self.active_function(self)
+	local tracks, terminated = self.active_function(self)
 	if terminated then
 		self.func_terminated = terminated
 	end
-	return track
+	return tracks
 end
 
 -- ? ? ?
@@ -66,7 +66,7 @@ function Spawner:random(max_loops)
 		self.last_bobbel = t
 		randnum = math.random(0, 3)
 		if randnum ~= 3 then
-			return randnum
+			return { randnum }
 		end
 	end
 end
@@ -87,7 +87,7 @@ function Spawner:linear(max_loops, track)
 		self.last_bobbel = t
 
 		track = track or math.floor(self.last_new_function % 3)
-		return track
+		return { track }
 	end
 end
 
@@ -112,9 +112,9 @@ function Spawner:saw(max_loops, orientation)
 		if track ~= 3 then
 			orientation = orientation or math.floor(self.last_new_function % 2)
 			if orientation == 0 then
-				return track
+				return { track }
 			else
-				return 2 - track
+				return { 2 - track }
 			end
 		end
 	end
@@ -141,9 +141,9 @@ function Spawner:triangle(max_loops, orientation)
 
 		orientation = orientation or math.floor(self.last_new_function % 2)
 		if orientation == 0 then
-			return math.abs((loops % 4 - 2))
+			return { math.abs((loops % 4 - 2)) }
 		else
-			return 2 - math.abs((loops % 4 - 2))
+			return { 2 - math.abs((loops % 4 - 2)) }
 		end
 	end
 end
@@ -166,6 +166,6 @@ function Spawner:oscilator(max_loops, blank_track)
 
 		blank_track = blank_track or math.floor(self.last_new_function % 3)
 		local track = loops % 2 + 1
-		return (blank_track + track) % 3
+		return { (blank_track + track) % 3 }
 	end
 end

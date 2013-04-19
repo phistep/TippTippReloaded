@@ -150,10 +150,14 @@ end
 
 function game:spawn_bobbel(dt)
 	self.spawner:update(dt, self.time_between_bobbels)
-	local new_track = self.spawner:new_bobbel_track()
-	if new_track and new_track >= 0 and new_track <= 2 then
-		local new_bobbel = Bobbel.create(0, new_track)
-		table.insert(self.bobbels, new_bobbel)
+	local new_tracks = self.spawner:new_bobbel_track()
+	if new_tracks then
+		for _, trackno in ipairs(new_tracks) do
+			if trackno >= 0 and trackno <= 2 then
+				local new_bobbel = Bobbel.create(0, trackno)
+				table.insert(self.bobbels, new_bobbel)
+			end
+		end
 	end
 end
 
