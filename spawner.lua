@@ -13,9 +13,7 @@ function Spawner.create(time_between_bobbels)
 	spawner.func_terminated = false
 	spawner.functions = {
 		spawner.random,
-		spawner.inner_track,
-		spawner.middle_track,
-		spawner.outer_track,
+		spawner.linear,
 		spawner.saw,
 		spawner.triangle,
 	}
@@ -72,10 +70,10 @@ function Spawner:random()
 	end
 end
 
--- O | |
--- O | |
--- O | |
-function Spawner:inner_track()
+-- | O |
+-- | O |
+-- | O |
+function Spawner:linear(track)
 	local max_loops = 10
 	local t = self.time - self.last_new_function
 	local gap = 0.5 * self.time_between_bobbels
@@ -86,43 +84,9 @@ function Spawner:inner_track()
 		return nil, true
 	elseif t >= limit then
 		self.last_bobbel = t
-		return 2
-	end
-end
 
--- | O |
--- | O |
--- | O |
-function Spawner:middle_track()
-	local max_loops = 10
-	local t = self.time - self.last_new_function
-	local gap = 0.5 * self.time_between_bobbels
-	local loops = math.floor(self.last_bobbel / gap)
-	local limit = loops * gap + gap
-
-	if loops >= max_loops then
-		return nil, true
-	elseif t >= limit then
-		self.last_bobbel = t
-		return 1
-	end
-end
-
--- | | O
--- | | O
--- | | O
-function Spawner:outer_track()
-	local max_loops = 10
-	local t = self.time - self.last_new_function
-	local gap = 0.5 * self.time_between_bobbels
-	local loops = math.floor(self.last_bobbel / gap)
-	local limit = loops * gap + gap
-
-	if loops >= max_loops then
-		return nil, true
-	elseif t >= limit then
-		self.last_bobbel = t
-		return 0
+		track = track or math.floor(self.last_new_function % 3)
+		return track
 	end
 end
 
