@@ -16,6 +16,7 @@ function Spawner.create(time_between_bobbels)
 		spawner.linear,
 		spawner.saw,
 		spawner.triangle,
+		spawner.oscilator,
 	}
 
 	spawner:pick_random_func()
@@ -144,5 +145,27 @@ function Spawner:triangle()
 		else
 			return 2 - math.abs((loops % 4 - 2))
 		end
+	end
+end
+
+-- O | |
+-- | O |
+-- O | |
+-- | O |
+function Spawner:oscilator(blank_track)
+	local max_loops = 10
+	local t = self.time - self.last_new_function
+	local gap = 0.5 * self.time_between_bobbels
+	local loops = math.floor(self.last_bobbel / gap)
+	local limit = loops * gap + gap
+
+	if loops >= max_loops then
+		return nil, true
+	elseif t >= limit then
+		self.last_bobbel = t
+
+		blank_track = blank_track or math.floor(self.last_new_function % 3)
+		local track = loops % 2 + 1
+		return (blank_track + track) % 3
 	end
 end
