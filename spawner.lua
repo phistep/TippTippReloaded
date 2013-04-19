@@ -17,6 +17,7 @@ function Spawner.create(time_between_bobbels)
 		spawner.middle_track,
 		spawner.outer_track,
 		spawner.saw,
+		spawner.triangle,
 	}
 
 	spawner:pick_random_func()
@@ -129,5 +130,20 @@ function Spawner:saw()
 				return 2 - track
 			end
 		end
+	end
+end
+
+function Spawner:triangle()
+	local t = self.time - self.last_new_function
+	local gap = self.time_between_bobbels
+	local loops = math.floor(self.last_bobbel / gap)
+	local limit = loops * gap + gap
+
+	if loops >= 9 then
+		return nil, true
+	elseif t >= limit then
+		self.last_bobbel = t
+
+		return math.abs((loops % 4 - 2))
 	end
 end
