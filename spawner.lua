@@ -64,10 +64,14 @@ function Spawner:random(max_loops)
 		return nil, true
 	elseif t >= limit then
 		self.last_bobbel = t
-		randnum = math.random(0, 3)
-		if randnum ~= 3 then
-			return { randnum }
+
+		tracks = {}
+		for i = 0, 2 do
+			if math.random() < 0.4 then
+				table.insert(tracks, i)
+			end
 		end
+		return tracks
 	end
 end
 
