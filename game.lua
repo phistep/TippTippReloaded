@@ -263,8 +263,8 @@ function game:set_controller_velocity(new_velocity)
 end
 
 function game:hit(hit_bbl)
-	self.score:count_hit()
 	for _, hbbl in ipairs(hit_bbl) do
+		self.score:count_hit()
 		self:remove_by_values(hbbl.angle, hbbl.track)
 		if not self.mute then
 			self.synth:play(hbbl.track)
