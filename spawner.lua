@@ -52,10 +52,10 @@ end
 function Spawner:random()
 	local t = self.time - self.last_new_function
 	local gap = self.time_between_bobbels
-	local loops = self.last_bobbel / gap
-	local limit = math.floor(self.last_bobbel / gap) * gap + gap
+	local loops = math.floor(self.last_bobbel / gap)
+	local limit = loops * gap + gap
 
-	if loops > 10 then
+	if loops >= 10 then
 		return nil, true
 	elseif t >= limit then
 		self.last_bobbel = t
@@ -69,10 +69,10 @@ end
 function Spawner:inner_track()
 	local t = self.time - self.last_new_function
 	local gap = 0.5 * self.time_between_bobbels
-	local loops = self.last_bobbel / gap
-	local limit = math.floor(self.last_bobbel / gap) * gap + gap
+	local loops = math.floor(self.last_bobbel / gap)
+	local limit = loops * gap + gap
 
-	if loops > 10 then
+	if loops >= 10 then
 		return nil, true
 	elseif t >= limit then
 		self.last_bobbel = t
@@ -83,10 +83,10 @@ end
 function Spawner:middle_track()
 	local t = self.time - self.last_new_function
 	local gap = 0.5 * self.time_between_bobbels
-	local loops = self.last_bobbel / gap
-	local limit = math.floor(self.last_bobbel / gap) * gap + gap
+	local loops = math.floor(self.last_bobbel / gap)
+	local limit = loops * gap + gap
 
-	if loops > 10 then
+	if loops >= 10 then
 		return nil, true
 	elseif t >= limit then
 		self.last_bobbel = t
@@ -97,10 +97,10 @@ end
 function Spawner:outer_track()
 	local t = self.time - self.last_new_function
 	local gap = 0.5 * self.time_between_bobbels
-	local loops = self.last_bobbel / gap
-	local limit = math.floor(self.last_bobbel / gap) * gap + gap
+	local loops = math.floor(self.last_bobbel / gap)
+	local limit = loops * gap + gap
 
-	if loops > 10 then
+	if loops >= 10 then
 		return nil, true
 	elseif t >= limit then
 		self.last_bobbel = t
