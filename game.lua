@@ -1,6 +1,7 @@
 require 'bobbel'
 require 'scoreboard'
 require 'synth'
+require 'spawner'
 
 local game = {
 	debug = true,
@@ -30,6 +31,7 @@ local game = {
 	score = Scoreboard.create(),
 	synth = nil,
 	mute = false,
+	spawner = Spawner.create(),
 }
 
 function game:init()
@@ -144,14 +146,12 @@ function game:update_gamespeed(dt)
 end
 
 function game:spawn_bobbel(dt)
-	self.total_time = self.total_time + dt
-	if self.total_time >= self.time_between_bobbels then
-		local randnum = math.random(0, 3)
-		if randnum ~= 3 then
-			table.insert(self.bobbels, Bobbel.create(0, math.random(0, 2)))
-		end
+	self.spawner:update(dt, self.time_between_bobbels)
+	local new_track = self.spawner:new_bobbel_track()
+	if new_track then
+		local new_bobbel = Bobbel.create(0, new_track)
+		table.insert(self.bobbels, new_bobbel)
 	end
-	self.total_time = self.total_time % self.time_between_bobbels
 end
 
 
