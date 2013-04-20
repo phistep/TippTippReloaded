@@ -1,4 +1,4 @@
-const float sigma = 2.5;
+const float sigma = 2.0;
 const float blur_size = 1.0 / 300.0;
 const float numBlurPixelsPerSide = 2.0;
 uniform vec2 blurMultiplyVec;

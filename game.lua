@@ -30,9 +30,8 @@ local game = {
 	score = Scoreboard.create(),
 	synth = nil,
 	mute = false,
-	glow_canvas = nil,
-	glow_canvas2 = nil,
-	glow_canvas3 = nil,
+	glowing_canvas = nil,
+	glowmap_canvas = nil,
 	blur = nil,
 	bloom_effect = nil,
 }
@@ -71,9 +70,8 @@ function game:init()
 	self.synth = Synth.create()
 
 	-- glow stuff
-	self.glow_canvas = love.graphics.newCanvas(800, 600)
-	self.glow_canvas2 = love.graphics.newCanvas(400, 300)
-	self.glow_canvas3 = love.graphics.newCanvas(400, 300)
+	self.glowing_canvas = love.graphics.newCanvas()
+	self.glowmap_canvas = love.graphics.newCanvas(0.5 * love.graphics.getWidth(), 0.5 * love.graphics.getHeight())
 	self.blur = love.graphics.newPixelEffect("blur.glsl")
 	self.bloom_effect = love.graphics.newPixelEffect("bloom.glsl")
 end
@@ -83,8 +81,8 @@ function game:enter(game_menu)
 end
 
 function game:draw()
-	self.glow_canvas:clear()
-	love.graphics.setCanvas(self.glow_canvas)
+	self.glowing_canvas:clear()
+	love.graphics.setCanvas(self.glowing_canvas)
 
 	love.graphics.setColor(100, 100, 100)
 	love.graphics.setLineWidth(2)
@@ -112,19 +110,18 @@ function game:draw()
 	end
 
 
-	love.graphics.setCanvas(self.glow_canvas2)
+	love.graphics.setCanvas(self.glowmap_canvas)
 	love.graphics.setPixelEffect(self.blur)
 	love.graphics.setBlendMode('premultiplied')
 	self.blur:send("blurMultiplyVec", {1.0, 0.0});
-	love.graphics.draw(self.glow_canvas, 0, 0, 0, 0.5, 0.5)
+	love.graphics.draw(self.glowing_canvas, 0, 0, 0, 0.5, 0.5)
 	love.graphics.setBlendMode('alpha')
-	love.graphics.setCanvas(self.glow_canvas3)
 	self.blur:send("blurMultiplyVec", {0.0, 1.0});
-	love.graphics.draw(self.glow_canvas2)
+	love.graphics.draw(self.glowmap_canvas)
 	love.graphics.setCanvas()
 	love.graphics.setPixelEffect(self.bloom_effect)
-	self.bloom_effect:send("glowmap", self.glow_canvas3);
-	love.graphics.draw(self.glow_canvas)
+	self.bloom_effect:send("glowmap", self.glowmap_canvas);
+	love.graphics.draw(self.glowing_canvas)
 	love.graphics.setPixelEffect()
 
 	love.graphics.setColor(23, 200, 255)
