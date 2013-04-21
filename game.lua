@@ -45,14 +45,16 @@ function game:init()
 	love.graphics.setLineWidth(3)
 	--love.graphics.circle("line", self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
 	love.graphics.setBlendMode('premultiplied')
-	glowShape('circle', self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
+	glowShape(2, 'circle', self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
 	love.graphics.setBlendMode('alpha')
 
 	-- create global controller canvas
 	self.controller_canvas = love.graphics.newCanvas(2 * self.bobbel_radius, 2 * self.bobbel_radius)
 	love.graphics.setCanvas(self.controller_canvas)
 	love.graphics.setColor(255, 255, 255)
-	love.graphics.circle("fill", self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-4, 20)
+	love.graphics.setBlendMode('premultiplied')
+	glowCircle(self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-4, 20)
+	love.graphics.setBlendMode('alpha')
 
 	-- create controller bobbels
 	for _, cont in ipairs(self.controller) do
@@ -89,9 +91,9 @@ function game:draw()
 
 	love.graphics.setColor(100, 100, 100)
 	love.graphics.setLineWidth(2)
-	glowShape('circle', self.center.x, self.center.y, self.field_radius)
-	glowShape('circle', self.center.x, self.center.y, self.field_radius - self.track_distance)
-	glowShape('circle', self.center.x, self.center.y, self.field_radius - 2*self.track_distance)
+	glowShape(2, 'circle', self.center.x, self.center.y, self.field_radius)
+	glowShape(2, 'circle', self.center.x, self.center.y, self.field_radius - self.track_distance)
+	glowShape(2, 'circle', self.center.x, self.center.y, self.field_radius - 2*self.track_distance)
 
 	love.graphics.setColor(0, 255, 0)
 	for _, bbl in pairs(self.bobbels) do
@@ -107,15 +109,6 @@ function game:draw()
 		cont:draw(self, self.controller_canvas)
 	end
 
-	for i=20, 5, -0.5 do
-		if i == 5 then
-			love.graphics.setColor(10, 10, 10, 255)
-		else
-			love.graphics.setColor(10, 10, 10, 255/5)
-		end
-		love.graphics.arc("fill", self.center.x, self.center.y, self.field_radius*1.25 + i, math.rad(90-i), math.rad(90+i), 100)
-	end
-
 	love.graphics.setCanvas(self.glowmap_canvas)
 	love.graphics.setPixelEffect(self.blur)
 	love.graphics.setBlendMode('premultiplied')
@@ -129,6 +122,15 @@ function game:draw()
 	self.bloom_effect:send("glowmap", self.glowmap_canvas);
 	love.graphics.draw(self.glowing_canvas)
 	love.graphics.setPixelEffect()
+
+	for i=20, 5, -0.5 do
+		if i == 5 then
+			love.graphics.setColor(10, 10, 10, 255)
+		else
+			love.graphics.setColor(10, 10, 10, 255/5)
+		end
+		love.graphics.arc("fill", self.center.x, self.center.y, self.field_radius*1.25 + i, math.rad(90-i), math.rad(90+i), 100)
+	end
 
 	self.score:draw(10, 30)
 	love.graphics.setColor(50, 255, 23)
@@ -408,9 +410,9 @@ function game:debugging_change_values(dt)
 	end
 end
 
-function glowShape(type, ...)
+function glowShape(lwidth, type, ...)
 	local r, g, b, a = love.graphics.getColor()
-	local lwidth = love.graphics.getLineWidth()
+	--local lwidth = love.graphics.getLineWidth()
 
 	love.graphics.setColor(r, g, b, 20)
 
@@ -427,6 +429,22 @@ function glowShape(type, ...)
 		else
 			love.graphics[type]("line", ...)
 		end
+	end
+	love.graphics.setColor(r, g, b, a)
+end
+
+function glowCircle(x, y, radius, segments)
+	local r, g, b, a = love.graphics.getColor()
+
+	love.graphics.setColor(r, g, b, 20)
+
+	for i = radius + 6, radius + 1, -1 do
+		if i == radius + 1 then
+			i = radius
+			love.graphics.setColor(r, g, b, 255)
+		end
+
+		love.graphics.circle('fill', x, y, i, segments)
 	end
 	love.graphics.setColor(r, g, b, a)
 end
