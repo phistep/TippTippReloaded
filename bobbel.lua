@@ -17,7 +17,7 @@ function Bobbel:draw(state, bobbel_canvas)
 		state.center.x, state.center.y,
 		self.angle, 1, 1,
 		state.bobbel_radius,
-		-(state.field_radius - self.track * state.track_distance - state.bobbel_radius)
+		-(state.gamefield_radius - self.track * state.track_distance - state.bobbel_radius)
 	)
 end
 
