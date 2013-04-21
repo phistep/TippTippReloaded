@@ -1,13 +1,10 @@
 require 'bobbel'
+require 'drawing'
 require 'scoreboard'
 require 'synth'
 
 local game = {
 	debug = true,
-	bobbel_radius = 15,
-	field_radius = 200,
-	center = { x = 300, y = 300 },
-	track_distance = 25,
 	total_time = 0,
 
 	hit_offset = math.rad(5),
@@ -23,33 +20,17 @@ local game = {
 	min_velocity = 8 * -0.02,
 	key_forward_movement = math.rad(90),
 
-	bobbel_canvas = nil,
-	controller_canvas = nil,
 	bobbels = {},
 	controller = {Bobbel.create(math.rad(270), 0), Bobbel.create(math.rad(270), 1), Bobbel.create(math.rad(270), 2)},
+	drawing = Drawing.create(),
 	score = Scoreboard.create(),
 	synth = nil,
 	mute = false,
-	glowing_canvas = nil,
-	glowmap_canvas = nil,
-	blur = nil,
-	bloom_effect = nil,
 }
 
 function game:init()
-
-	-- create global bobbel canvas
-	self.bobbel_canvas = love.graphics.newCanvas(2 * self.bobbel_radius, 2 * self.bobbel_radius)
-	love.graphics.setCanvas(self.bobbel_canvas)
-	love.graphics.setColor(255, 255, 255)
-	love.graphics.setLineWidth(3)
-	love.graphics.circle("line", self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
-
-	-- create global controller canvas
-	self.controller_canvas = love.graphics.newCanvas(2 * self.bobbel_radius, 2 * self.bobbel_radius)
-	love.graphics.setCanvas(self.controller_canvas)
-	love.graphics.setColor(255, 255, 255)
-	love.graphics.circle("fill", self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-4, 20)
+	-- window settings
+	self.drawing:load()
 
 	-- create controller bobbels
 	for _, cont in ipairs(self.controller) do
@@ -59,21 +40,8 @@ function game:init()
 	self.controller[2].key = 's'
 	self.controller[3].key = 'a'
 
-
-	-- window settings
-	love.graphics.setCanvas()
-	love.graphics.setBackgroundColor(10, 10, 10)
-	love.graphics.setLineStyle("smooth")
-	love.graphics.setLineWidth(1)
-
 	-- sound stuff
 	self.synth = Synth.create()
-
-	-- glow stuff
-	self.glowing_canvas = love.graphics.newCanvas()
-	self.glowmap_canvas = love.graphics.newCanvas(0.5 * love.graphics.getWidth(), 0.5 * love.graphics.getHeight())
-	self.blur = love.graphics.newPixelEffect("blur.glsl")
-	self.bloom_effect = love.graphics.newPixelEffect("bloom.glsl")
 end
 
 function game:enter(game_menu)
@@ -81,55 +49,17 @@ function game:enter(game_menu)
 end
 
 function game:draw()
-	self.glowing_canvas:clear()
-	love.graphics.setCanvas(self.glowing_canvas)
+	self.drawing:let_glow(function()
+		self.drawing:gamefield()
+		self.drawing:bobbels(self.bobbels)
+		self.drawing:controller(self.controller)
+	end)
 
-	love.graphics.setColor(100, 100, 100)
-	love.graphics.setLineWidth(2)
-	love.graphics.circle("line", self.center.x, self.center.y, self.field_radius)
-	love.graphics.circle("line", self.center.x, self.center.y, self.field_radius - self.track_distance)
-	love.graphics.circle("line", self.center.x, self.center.y, self.field_radius - 2*self.track_distance)
+	self.drawing:origin()
 
-	love.graphics.setColor(0, 255, 0)
-	for _, bbl in pairs(self.bobbels) do
-		bbl:draw(self)
-	end
-
-	for _, cont in ipairs(self.controller) do
-		if cont.pressed then
-			love.graphics.setColor(4, 215, 243)
-		else
-			love.graphics.setColor(100, 100, 100)
-		end
-		cont:draw(self, self.controller_canvas)
-	end
-
-	for i=20, 0, -1 do
-		love.graphics.setColor(10, 10, 10, 255/5)
-		love.graphics.arc("fill", self.center.x, self.center.y, self.field_radius*1.25, math.rad(90-i), math.rad(90+i), 100)
-	end
-
-
-	love.graphics.setCanvas(self.glowmap_canvas)
-	love.graphics.setPixelEffect(self.blur)
-	love.graphics.setBlendMode('premultiplied')
-	self.blur:send("blurMultiplyVec", {1.0, 0.0});
-	love.graphics.draw(self.glowing_canvas, 0, 0, 0, 0.5, 0.5)
-	love.graphics.setBlendMode('alpha')
-	self.blur:send("blurMultiplyVec", {0.0, 1.0});
-	love.graphics.draw(self.glowmap_canvas)
-	love.graphics.setCanvas()
-	love.graphics.setPixelEffect(self.bloom_effect)
-	self.bloom_effect:send("glowmap", self.glowmap_canvas);
-	love.graphics.draw(self.glowing_canvas)
-	love.graphics.setPixelEffect()
-
-	love.graphics.setColor(23, 200, 255)
 	self.score:draw(10, 30)
-	if self.mute then
-		love.graphics.print("muted, [M] to unmute", 10, 70)
-	end
-	self:debugging_output()
+	self.drawing:muted(self.mute)
+	self.drawing:debug(self)
 end
 
 function game:update(dt)
@@ -294,28 +224,6 @@ end
 function game:fail()
 	self.score:count_miss()
 	self:set_controller_velocity(self.controller_velocity + self.fail_acceleration)
-end
-
-function game:debugging_output()
-	if self.debug then
-		local xcoord = self.center.x + self.field_radius
-		xcoord = xcoord - 80
-		love.graphics.print("[+] [-] FPS: "..tostring(love.timer.getFPS()), xcoord, 10)
-
-		love.graphics.print("[3] [E] hit_offset: "..tostring(math.deg(self.hit_offset)), xcoord, 40)
-		love.graphics.print("[4] [R] angular_velocity: "..tostring(math.deg(self.angular_velocity)), xcoord, 70)
-		love.graphics.print("[5] [T] angular_velocity_modifier: "..tostring(self.angular_velocity_modifier), xcoord, 90)
-		xcoord = xcoord + 40
-		love.graphics.print("[6] [Y] time_between_bobbels: "..tostring(self.time_between_bobbels), xcoord, 120)
-		love.graphics.print("[7] [U] time_between_bobbels_modifier: "..tostring(self.time_between_bobbels_modifier), xcoord, 140)
-
-		xcoord = xcoord + 60
-		love.graphics.print("[8] [I] controller_velocity: "..tostring(self.controller_velocity), xcoord, 190)
-		love.graphics.print("[9] [O] hit_acceleration: "..tostring(self.hit_acceleration), xcoord, 220)
-		love.graphics.print("[0] [P] fail_acceleration: "..tostring(self.fail_acceleration), xcoord, 240)
-		love.graphics.print("[ - ]  [  max_velocity: "..tostring(self.max_velocity), xcoord, 260)
-		love.graphics.print("[=]  ]  min_velocity: "..tostring(self.min_velocity), xcoord, 280)
-	end
 end
 
 function game:debugging_change_values(dt)
