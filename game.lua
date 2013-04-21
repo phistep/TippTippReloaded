@@ -30,6 +30,10 @@ local game = {
 	score = Scoreboard.create(),
 	synth = nil,
 	mute = false,
+	glowing_canvas = nil,
+	glowmap_canvas = nil,
+	blur = nil,
+	bloom_effect = nil,
 }
 
 function game:init()
@@ -67,6 +71,12 @@ function game:init()
 
 	-- sound stuff
 	self.synth = Synth.create()
+
+	-- glow stuff
+	self.glowing_canvas = love.graphics.newCanvas()
+	self.glowmap_canvas = love.graphics.newCanvas(0.5 * love.graphics.getWidth(), 0.5 * love.graphics.getHeight())
+	self.blur = love.graphics.newPixelEffect("blur.glsl")
+	self.bloom_effect = love.graphics.newPixelEffect("bloom.glsl")
 end
 
 function game:enter(game_menu)
@@ -74,7 +84,8 @@ function game:enter(game_menu)
 end
 
 function game:draw()
-	love.graphics.setCanvas()
+	self.glowing_canvas:clear()
+	love.graphics.setCanvas(self.glowing_canvas)
 
 	love.graphics.setColor(100, 100, 100)
 	love.graphics.setLineWidth(2)
@@ -105,12 +116,25 @@ function game:draw()
 		love.graphics.arc("fill", self.center.x, self.center.y, self.field_radius*1.25 + i, math.rad(90-i), math.rad(90+i), 100)
 	end
 
+	love.graphics.setCanvas(self.glowmap_canvas)
+	love.graphics.setPixelEffect(self.blur)
+	love.graphics.setBlendMode('premultiplied')
+	self.blur:send("blurMultiplyVec", {1.0, 0.0});
+	love.graphics.draw(self.glowing_canvas, 0, 0, 0, 0.5, 0.5)
+	love.graphics.setBlendMode('alpha')
+	self.blur:send("blurMultiplyVec", {0.0, 1.0});
+	love.graphics.draw(self.glowmap_canvas)
+	love.graphics.setCanvas()
+	love.graphics.setPixelEffect(self.bloom_effect)
+	self.bloom_effect:send("glowmap", self.glowmap_canvas);
+	love.graphics.draw(self.glowing_canvas)
+	love.graphics.setPixelEffect()
+
 	self.score:draw(10, 30)
 	love.graphics.setColor(50, 255, 23)
 	if self.mute then
 		love.graphics.print("muted, [M] to unmute", 10, 70)
 	end
-
 	self:debugging_output()
 end
 
