@@ -39,7 +39,10 @@ function game:init()
 	love.graphics.setCanvas(self.bobbel_canvas)
 	love.graphics.setColor(255, 255, 255)
 	love.graphics.setLineWidth(3)
-	love.graphics.circle("line", self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
+	--love.graphics.circle("line", self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
+	love.graphics.setBlendMode('premultiplied')
+	glowShape('circle', self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
+	love.graphics.setBlendMode('alpha')
 
 	-- create global controller canvas
 	self.controller_canvas = love.graphics.newCanvas(2 * self.bobbel_radius, 2 * self.bobbel_radius)
@@ -75,9 +78,9 @@ function game:draw()
 
 	love.graphics.setColor(100, 100, 100)
 	love.graphics.setLineWidth(2)
-	love.graphics.circle("line", self.center.x, self.center.y, self.field_radius)
-	love.graphics.circle("line", self.center.x, self.center.y, self.field_radius - self.track_distance)
-	love.graphics.circle("line", self.center.x, self.center.y, self.field_radius - 2*self.track_distance)
+	glowShape('circle', self.center.x, self.center.y, self.field_radius)
+	glowShape('circle', self.center.x, self.center.y, self.field_radius - self.track_distance)
+	glowShape('circle', self.center.x, self.center.y, self.field_radius - 2*self.track_distance)
 
 	love.graphics.setColor(0, 255, 0)
 	for _, bbl in pairs(self.bobbels) do
@@ -93,13 +96,17 @@ function game:draw()
 		cont:draw(self, self.controller_canvas)
 	end
 
-	for i=20, 0, -1 do
-		love.graphics.setColor(10, 10, 10, 255/5)
-		love.graphics.arc("fill", self.center.x, self.center.y, self.field_radius*1.25, math.rad(90-i), math.rad(90+i), 100)
+	for i=20, 5, -0.5 do
+		if i == 5 then
+			love.graphics.setColor(10, 10, 10, 255)
+		else
+			love.graphics.setColor(10, 10, 10, 255/5)
+		end
+		love.graphics.arc("fill", self.center.x, self.center.y, self.field_radius*1.25 + i, math.rad(90-i), math.rad(90+i), 100)
 	end
 
-	love.graphics.setColor(23, 200, 255)
 	self.score:draw(10, 30)
+	love.graphics.setColor(50, 255, 23)
 	if self.mute then
 		love.graphics.print("muted, [M] to unmute", 10, 70)
 	end
@@ -375,6 +382,29 @@ function game:debugging_change_values(dt)
 			self.min_velocity = self.min_velocity - dt * 0.01
 		end
 	end
+end
+
+function glowShape(type, ...)
+	local r, g, b, a = love.graphics.getColor()
+	local lwidth = love.graphics.getLineWidth()
+
+	love.graphics.setColor(r, g, b, 20)
+
+	for i = lwidth + 6, lwidth + 1, -1 do
+		if i == lwidth + 1 then
+			i = lwidth
+			love.graphics.setColor(r, g, b, 255)
+		end
+
+		love.graphics.setLineWidth(i)
+
+		if type == "line" then
+			love.graphics[type](...)
+		else
+			love.graphics[type]("line", ...)
+		end
+	end
+	love.graphics.setColor(r, g, b, a)
 end
 
 return game
