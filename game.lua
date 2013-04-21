@@ -2,10 +2,10 @@ require 'bobbel'
 require 'drawing'
 require 'scoreboard'
 require 'synth'
+require 'spawner'
 
 local game = {
 	debug = true,
-	total_time = 0,
 
 	hit_offset = math.rad(5),
 	angular_velocity = math.rad(30),
@@ -26,6 +26,7 @@ local game = {
 	score = Scoreboard.create(),
 	synth = nil,
 	mute = false,
+	spawner = nil,
 }
 
 function game:init()
@@ -42,6 +43,9 @@ function game:init()
 
 	-- sound stuff
 	self.synth = Synth.create()
+
+	-- spawner setup
+	self.spawner = Spawner.create(self.time_between_bobbels)
 end
 
 function game:enter(game_menu)
@@ -99,14 +103,16 @@ function game:update_gamespeed(dt)
 end
 
 function game:spawn_bobbel(dt)
-	self.total_time = self.total_time + dt
-	if self.total_time >= self.time_between_bobbels then
-		local randnum = math.random(0, 3)
-		if randnum ~= 3 then
-			table.insert(self.bobbels, Bobbel.create(0, math.random(0, 2)))
+	self.spawner:update(dt, self.time_between_bobbels)
+	local new_tracks = self.spawner:new_bobbel_track()
+	if new_tracks then
+		for _, trackno in ipairs(new_tracks) do
+			if trackno >= 0 and trackno <= 2 then
+				local new_bobbel = Bobbel.create(0, trackno)
+				table.insert(self.bobbels, new_bobbel)
+			end
 		end
 	end
-	self.total_time = self.total_time % self.time_between_bobbels
 end
 
 
@@ -211,8 +217,8 @@ function game:set_controller_velocity(new_velocity)
 end
 
 function game:hit(hit_bbl)
-	self.score:count_hit()
 	for _, hbbl in ipairs(hit_bbl) do
+		self.score:count_hit()
 		self:remove_by_values(hbbl.angle, hbbl.track)
 		if not self.mute then
 			self.synth:play(hbbl.track)
