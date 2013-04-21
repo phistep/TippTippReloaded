@@ -9,7 +9,6 @@ local game = {
 	field_radius = 200,
 	center = { x = 300, y = 300 },
 	track_distance = 25,
-	total_time = 0,
 
 	hit_offset = math.rad(5),
 	angular_velocity = math.rad(30),
