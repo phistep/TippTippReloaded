@@ -136,13 +136,12 @@ function Drawing:controller(controller)
 end
 
 function Drawing:origin()
-	for i=15, 0, -0.5 do
-		alpha = 255 * (15 - i) / 25
+	local limit = 20
+	for i = limit, 0, -0.5 do
+		alpha = 40 * math.pow((limit - i) / limit, 0.5)
 		love.graphics.setColor(self.color_origin.r, self.color_origin.g, self.color_origin.b, alpha)
-		love.graphics.arc("fill", self.center.x, self.center.y, self.gamefield_radius*1.25 + i, math.rad(85-i), math.rad(95+i), 100)
+		love.graphics.arc("fill", self.center.x, self.center.y, self.gamefield_radius*1.25 + i, math.rad(90-i), math.rad(90+i), 100)
 	end
-
-	--glowShape('arc', 'fill', self.center.x, self.center.y, self.gamefield_radius*1.25, math.rad(85), math.rad(95))
 end
 
 function Drawing:scoreboard(score, multiplier, spree, max_spree)

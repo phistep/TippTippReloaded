@@ -11,6 +11,17 @@ end
 
 function Bobbel:draw(state, bobbel_canvas)
 	bobbel_canvas = bobbel_canvas or state.bobbel_canvas
+	local r, g, b, a = love.graphics.getColor()
+	local angle = self.angle
+	local limit = math.rad(15)
+
+	if angle >= 2*math.pi - limit then
+		angle = math.abs(math.rad(360) - angle)
+	end
+	if angle <= limit then
+		local alpha = a * math.pow(angle / limit, 2)
+		love.graphics.setColor(r, g, b, alpha)
+	end
 
 	love.graphics.draw(
 		bobbel_canvas,
@@ -19,6 +30,7 @@ function Bobbel:draw(state, bobbel_canvas)
 		state.bobbel_radius,
 		-(state.gamefield_radius - self.track * state.track_distance - state.bobbel_radius)
 	)
+	love.graphics.setColor(r, g, b, a)
 end
 
 function Bobbel:update(state, dt)

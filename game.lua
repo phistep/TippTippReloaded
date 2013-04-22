@@ -50,9 +50,9 @@ end
 function game:draw()
 	self.drawing:let_glow(function()
 		self.drawing:gamefield()
+
 		self.drawing:bobbels(self.bobbels)
 		self.drawing:controller(self.controller)
-
 		self.drawing:origin()
 
 		self.drawing:scoreboard(self.score:get_score(), self.score:get_multiplier(), self.score:get_spree(), self.score:get_max_spree())
