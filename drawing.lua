@@ -15,6 +15,7 @@ function Drawing.create()
 	drawing.color_controller_pressed = { r = 255, g = 50, b = 0 }
 	drawing.color_scoreboard = { r = 255, g = 50, b = 0 }
 	drawing.color_muted = { r = 50, g = 255, b = 23 }
+	drawing.color_debugging = { r = 255, g = 50, b = 23 }
 	drawing.color_bobbel_inside_canvas = { r = 255, g = 255, b = 255 }
 	drawing.color_controller_inside_canvas = { r = 255, g = 255, b = 255 }
 
@@ -164,23 +165,42 @@ end
 
 function Drawing:debug(game)
 	if game.debug then
-		love.graphics.setColor(50, 255, 23)
-		local xcoord = self.center.x + self.gamefield_radius
-		xcoord = xcoord - 80
-		love.graphics.print("[+] [-] FPS: "..tostring(love.timer.getFPS()), xcoord, 10)
+		local xcoord = self.center.x + self.gamefield_radius / 2 + 20
+		local ycoord = 10
+		local boxwidth = love.graphics.getWidth() - xcoord
+		local boxheight = love.graphics.getHeight() - 2 * ycoord
+		local margin = 5
 
-		love.graphics.print("[3] [E] hit_offset: "..tostring(math.deg(game.hit_offset)), xcoord, 40)
-		love.graphics.print("[4] [R] angular_velocity: "..tostring(math.deg(game.angular_velocity)), xcoord, 70)
-		love.graphics.print("[5] [T] angular_velocity_modifier: "..tostring(game.angular_velocity_modifier), xcoord, 90)
-		xcoord = xcoord + 40
-		love.graphics.print("[6] [Y] time_between_bobbels: "..tostring(game.time_between_bobbels), xcoord, 120)
-		love.graphics.print("[7] [U] time_between_bobbels_modifier: "..tostring(game.time_between_bobbels_modifier), xcoord, 140)
+		love.graphics.setColor(50, 50, 50, 100)
+		glowShape('rectangle', 'fill', xcoord, ycoord, boxwidth, boxheight)
 
-		xcoord = xcoord + 60
-		love.graphics.print("[8] [I] controller_velocity: "..tostring(game.controller_velocity), xcoord, 190)
-		love.graphics.print("[9] [O] hit_acceleration: "..tostring(game.hit_acceleration), xcoord, 220)
-		love.graphics.print("[0] [P] fail_acceleration: "..tostring(game.fail_acceleration), xcoord, 240)
-		love.graphics.print("[ - ]  [  max_velocity: "..tostring(game.max_velocity), xcoord, 260)
-		love.graphics.print("[=]  ]  min_velocity: "..tostring(game.min_velocity), xcoord, 280)
+		xcoord = xcoord + margin
+		boxwidth = boxwidth - 2 * margin
+		ycoord = ycoord + margin
+
+		love.graphics.setColor(self.color_debugging.r, self.color_debugging.g, self.color_debugging.b)
+		love.graphics.printf("[+] [-] FPS: "..tostring(love.timer.getFPS()), xcoord, ycoord, boxwidth, 'right')
+		ycoord = ycoord + 30
+
+		love.graphics.printf("[3] [E] hit_offset: "..tostring(math.deg(game.hit_offset)), xcoord, ycoord, boxwidth, 'right')
+		ycoord = ycoord + 30
+		love.graphics.printf("[4] [R] angular_velocity: "..tostring(math.deg(game.angular_velocity)), xcoord, ycoord, boxwidth, 'right')
+		ycoord = ycoord + 40
+		love.graphics.printf("[5] [T] angular_velocity_modifier: "..tostring(game.angular_velocity_modifier), xcoord, ycoord, boxwidth, 'right')
+		ycoord = ycoord + 30
+		love.graphics.printf("[6] [Y] time_between_bobbels: "..tostring(game.time_between_bobbels), xcoord, ycoord, boxwidth, 'right')
+		ycoord = ycoord + 40
+		love.graphics.printf("[7] [U] time_between_bobbels_modifier: "..tostring(game.time_between_bobbels_modifier), xcoord, ycoord, boxwidth, 'right')
+		ycoord = ycoord + 50
+
+		love.graphics.printf("[8] [I] controller_velocity: "..tostring(game.controller_velocity), xcoord, ycoord, boxwidth, 'right')
+		ycoord = ycoord + 30
+		love.graphics.printf("[9] [O] hit_acceleration: "..tostring(game.hit_acceleration), xcoord, ycoord, boxwidth, 'right')
+		ycoord = ycoord + 20
+		love.graphics.printf("[0] [P] fail_acceleration: "..tostring(game.fail_acceleration), xcoord, ycoord, boxwidth, 'right')
+		ycoord = ycoord + 20
+		love.graphics.printf("[ - ]  [  max_velocity: "..tostring(game.max_velocity), xcoord, ycoord, boxwidth, 'right')
+		ycoord = ycoord + 20
+		love.graphics.printf("[=]  ]  min_velocity: "..tostring(game.min_velocity), xcoord, ycoord, boxwidth, 'right')
 	end
 end

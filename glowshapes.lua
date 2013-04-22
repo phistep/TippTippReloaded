@@ -26,7 +26,7 @@ function linedShape(lwidth, type, ...)
 	for i = lwidth + 6, lwidth + 1, -1 do
 		if i == lwidth + 1 then
 			i = lwidth
-			love.graphics.setColor(r, g, b, 255)
+			love.graphics.setColor(r, g, b, a)
 		end
 
 		love.graphics.setLineWidth(i)
@@ -48,7 +48,7 @@ function rectangle(x, y, width, height)
 	for i = 6, 1, -1 do
 		if i == 1 then
 			i = 0
-			love.graphics.setColor(r, g, b, 255)
+			love.graphics.setColor(r, g, b, a)
 		end
 
 		love.graphics.rectangle('fill', x - i, y - i, width + 2*i, height + 2*i)
@@ -64,7 +64,7 @@ function circle(x, y, radius, segments)
 	for i = radius + 6, radius + 1, -1 do
 		if i == radius + 1 then
 			i = radius
-			love.graphics.setColor(r, g, b, 255)
+			love.graphics.setColor(r, g, b, a)
 		end
 
 		love.graphics.circle('fill', x, y, i, segments)
@@ -80,7 +80,7 @@ function arc(x, y, radius, angle1, angle2, segments)
 	for i=6, 1, -1 do
 		if i == 1 then
 			i = 0
-			love.graphics.setColor(r, g, b, 255)
+			love.graphics.setColor(r, g, b, a)
 		end
 
 		love.graphics.arc("fill", x, y, radius + i, angle1 - math.rad(i), angle2 + math.rad(i), segments)
