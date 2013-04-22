@@ -171,7 +171,7 @@ function Drawing:debug(game)
 		local boxheight = love.graphics.getHeight() - 2 * ycoord
 		local margin = 5
 
-		love.graphics.setColor(50, 50, 50, 100)
+		love.graphics.setColor(30, 30, 30, 100)
 		glowShape('rectangle', 'fill', xcoord, ycoord, boxwidth, boxheight)
 
 		xcoord = xcoord + margin
