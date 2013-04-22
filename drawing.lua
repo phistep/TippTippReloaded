@@ -13,6 +13,7 @@ function Drawing.create()
 	drawing.color_bobbel = { r = 0, g = 255, b = 0 }
 	drawing.color_controller = { r = 100, g = 100, b = 100 }
 	drawing.color_controller_pressed = { r = 255, g = 50, b = 0 }
+	drawing.color_scoreboard = { r = 255, g = 50, b = 0 }
 	drawing.color_muted = { r = 50, g = 255, b = 23 }
 	drawing.color_bobbel_inside_canvas = { r = 255, g = 255, b = 255 }
 	drawing.color_controller_inside_canvas = { r = 255, g = 255, b = 255 }
@@ -143,10 +144,21 @@ function Drawing:origin()
 	--glowShape('arc', 'fill', self.center.x, self.center.y, self.gamefield_radius*1.25, math.rad(85), math.rad(95))
 end
 
+function Drawing:scoreboard(score, multiplier, spree, max_spree)
+	local x = 10
+	local y = 10
+
+	love.graphics.setColor(self.color_scoreboard.r, self.color_scoreboard.g, self.color_scoreboard.b)
+	love.graphics.print("Score: " .. tostring(score), x, y)
+	love.graphics.print("Multiplier: " .. tostring(multiplier), x, y+20)
+	love.graphics.print("Current Spree: " .. tostring(spree), x, y+40)
+	love.graphics.print("Best Spree: " .. tostring(max_spree), x, y+60)
+end
+
 function Drawing:muted(muted)
 	if muted then
 		love.graphics.setColor(self.color_muted.r, self.color_muted.g, self.color_muted.b)
-		love.graphics.print("muted, [M] to unmute", 10, 70)
+		love.graphics.print("muted, [M] to unmute", 10, 90)
 	end
 end
 

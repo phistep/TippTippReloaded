@@ -37,9 +37,18 @@ function Scoreboard:count_miss()
 	self.spree = 0
 end
 
-function Scoreboard:draw(x, y)
-	love.graphics.setColor(255, 255, 255)
-	love.graphics.print("Score: " .. tostring(self.score), x, y)
-	love.graphics.print("Multiplier: " .. tostring(self.multiplier) .. "x", x, y + 20)
-	love.graphics.print("Longest Spree: " .. tostring(self.max_spree) .. "x", x, y + 40)
+function Scoreboard:get_score()
+	return self.score
+end
+
+function Scoreboard:get_multiplier()
+	return self.multiplier
+end
+
+function Scoreboard:get_spree()
+	return self.spree
+end
+
+function Scoreboard:get_max_spree()
+	return self.max_spree
 end

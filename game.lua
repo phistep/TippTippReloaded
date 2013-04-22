@@ -56,7 +56,7 @@ function game:draw()
 
 	self.drawing:origin()
 
-	self.score:draw(10, 10)
+	self.drawing:scoreboard(self.score:get_score(), self.score:get_multiplier(), self.score:get_spree(), self.score:get_max_spree())
 	self.drawing:muted(self.synth:is_muted())
 	self.drawing:debug(self)
 end
