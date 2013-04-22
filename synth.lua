@@ -1,14 +1,14 @@
 Synth = {}
 Synth.__index = Synth
 
-local len = 0.3
-local rate = 44100
-local bits = 16
-local channel = 1
-
 function Synth.create()
 	local synth = {}
 	setmetatable(synth, Synth)
+
+	synth.len = 0.3
+	synth.rate = 44100
+	synth.bits = 16
+	synth.channel = 1
 
 	synth.sources = {
 		synth:createSource(1),
@@ -24,13 +24,13 @@ function Synth:play(track)
 end
 
 function Synth:createSource(n)
-	local soundData = love.sound.newSoundData(len * rate, rate, bits, channel)
+	local soundData = love.sound.newSoundData(self.len * self.rate, self.rate, self.bits, self.channel)
 	local amplitude = 1.0
-	local osc = Oscillator(get_frequency(n), saw)
-	local osc2 = Oscillator(get_frequency(n + 3), saw)
-	local osc3 = Oscillator(get_frequency(n + 7), saw)
+	local osc = self:oscillator(get_frequency(n), saw)
+	local osc2 = self:oscillator(get_frequency(n + 3), saw)
+	local osc3 = self:oscillator(get_frequency(n + 7), saw)
 
-	for i = 1, len * rate do
+	for i = 1, self.len * self.rate do
 		local sample = amplitude * (osc() + osc2() + osc3()) / 3
 		soundData:setSample(i, sample)
 	end
@@ -38,10 +38,10 @@ function Synth:createSource(n)
 	return love.audio.newSource(soundData)
 end
 
-function Oscillator(freq, f)
+function Synth:oscillator(freq, f)
 	local phase = 0
 	return function()
-		phase = phase + 2 * math.pi/rate
+		phase = phase + 2 * math.pi/self.rate
 		if phase >= 2 * math.pi then
 			phase = phase - 2 * math.pi
 		end

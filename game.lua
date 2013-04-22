@@ -4,48 +4,44 @@ require 'scoreboard'
 require 'synth'
 require 'spawner'
 
-local game = {
-	debug = true,
-
-	hit_offset = math.rad(5),
-	angular_velocity = math.rad(30),
-	angular_velocity_modifier = 0.003,
-	time_between_bobbels = 0.9,
-	time_between_bobbels_modifier = 0.003,
-
-	controller_velocity = 0,
-	hit_acceleration = 0.02,
-	fail_acceleration = -0.04,
-	max_velocity = 3 * 0.02,
-	min_velocity = 8 * -0.02,
-	key_forward_movement = math.rad(90),
-
-	bobbels = {},
-	controller = {Bobbel.create(math.rad(270), 0), Bobbel.create(math.rad(270), 1), Bobbel.create(math.rad(270), 2)},
-	drawing = Drawing.create(),
-	score = Scoreboard.create(),
-	synth = nil,
-	mute = false,
-	spawner = nil,
-}
+local game = {}
 
 function game:init()
-	-- window settings
-	self.drawing:load()
+	self.debug = true
+
+	self.hit_offset = math.rad(5)
+	self.angular_velocity = math.rad(30)
+	self.angular_velocity_modifier = 0.003
+	self.time_between_bobbels = 0.9
+	self.time_between_bobbels_modifier = 0.003
+
+	self.controller_velocity = 0
+	self.hit_acceleration = 0.02
+	self.fail_acceleration = -2 * self.hit_acceleration
+	self.max_velocity = 3 * self.hit_acceleration
+	self.min_velocity = -8 * self.hit_acceleration
+	self.key_forward_movement = math.rad(90)
+
+	self.bobbels = {}
+	self.controller = {}
+
+	self.drawing = Drawing.create()
+	self.score = Scoreboard.create()
+	self.spawner = Spawner.create(self.time_between_bobbels)
+	self.synth = Synth.create()
+	self.mute = false
 
 	-- create controller bobbels
-	for _, cont in ipairs(self.controller) do
-		cont.pressed = false
+	for i = 1, 3 do
+		self.controller[i] = Bobbel.create(math.rad(270), i-1)
+		self.controller[i].pressed = false
 	end
 	self.controller[1].key = 'd'
 	self.controller[2].key = 's'
 	self.controller[3].key = 'a'
 
-	-- sound stuff
-	self.synth = Synth.create()
-
-	-- spawner setup
-	self.spawner = Spawner.create(self.time_between_bobbels)
+	-- drawing settings
+	self.drawing:init()
 end
 
 function game:enter(game_menu)

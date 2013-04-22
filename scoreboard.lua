@@ -2,12 +2,13 @@ Scoreboard = {}
 Scoreboard.__index = Scoreboard
 
 function Scoreboard.create()
-	local score = {
-		score = 0,
-		multiplier = 1,
-		spree = 0,
-	}
+	local score = {}
 	setmetatable(score, Scoreboard)
+
+	score.score = 0
+	score.multiplier = 1
+	score.spree = 0
+
 	return score
 end
 

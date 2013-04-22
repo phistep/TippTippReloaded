@@ -36,7 +36,7 @@ function Drawing.create()
         return drawing
 end
 
-function Drawing:load()
+function Drawing:init()
 	love.graphics.setCanvas()
 	love.graphics.setBackgroundColor(self.color_background.r, self.color_background.g, self.color_background.b)
 
