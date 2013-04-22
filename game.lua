@@ -56,7 +56,7 @@ function game:draw()
 
 	self.drawing:origin()
 
-	self.score:draw(10, 30)
+	self.score:draw(10, 10)
 	self.drawing:muted(self.synth:is_muted())
 	self.drawing:debug(self)
 end
