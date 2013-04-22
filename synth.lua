@@ -10,6 +10,7 @@ function Synth.create()
 	synth.bits = 16
 	synth.channel = 1
 
+	synth.mute = false
 	synth.sources = {
 		synth:createSource(1),
 		synth:createSource(4),
@@ -20,7 +21,9 @@ function Synth.create()
 end
 
 function Synth:play(track)
-	love.audio.play(self.sources[track + 1])
+	if not self.mute then
+		love.audio.play(self.sources[track + 1])
+	end
 end
 
 function Synth:createSource(n)
@@ -36,6 +39,14 @@ function Synth:createSource(n)
 	end
 
 	return love.audio.newSource(soundData)
+end
+
+function Synth:is_muted()
+	return self.mute
+end
+
+function Synth:toggle_mute(new_mute)
+	self.mute = new_mute or not self.mute
 end
 
 function Synth:oscillator(freq, f)

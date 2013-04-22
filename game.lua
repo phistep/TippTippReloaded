@@ -29,7 +29,6 @@ function game:init()
 	self.score = Scoreboard.create()
 	self.spawner = Spawner.create(self.time_between_bobbels)
 	self.synth = Synth.create()
-	self.mute = false
 
 	-- create controller bobbels
 	for i = 1, 3 do
@@ -58,7 +57,7 @@ function game:draw()
 	self.drawing:origin()
 
 	self.score:draw(10, 30)
-	self.drawing:muted(self.mute)
+	self.drawing:muted(self.synth:is_muted())
 	self.drawing:debug(self)
 end
 
@@ -156,7 +155,7 @@ function game:keypressed(key)
 		Gamestate.switch(self.menu)
 	end
 	if key == "m" then
-		self.mute = not self.mute
+		self.synth:toggle_mute()
 	end
 	if key == "b" then
 		self.debug = not self.debug
@@ -216,9 +215,7 @@ function game:hit(hit_bbl)
 	for _, hbbl in ipairs(hit_bbl) do
 		self.score:count_hit()
 		self:remove_by_values(hbbl.angle, hbbl.track)
-		if not self.mute then
-			self.synth:play(hbbl.track)
-		end
+		self.synth:play(hbbl.track)
 	end
 	self:set_controller_velocity(self.controller_velocity + self.hit_acceleration)
 end
