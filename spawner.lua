@@ -79,7 +79,7 @@ end
 -- | O |
 -- | O |
 function Spawner:linear(max_loops, track)
-	max_loops = max_loops or 10
+	max_loops = max_loops or 5
 	local t = self.time - self.last_new_function
 	local gap = 0.5 * self.time_between_bobbels
 	local loops = math.floor(self.last_bobbel / gap)
@@ -159,7 +159,7 @@ end
 function Spawner:oscilator(max_loops, blank_track)
 	max_loops = max_loops or 10
 	local t = self.time - self.last_new_function
-	local gap = 0.5 * self.time_between_bobbels
+	local gap = self.time_between_bobbels
 	local loops = math.floor(self.last_bobbel / gap)
 	local limit = loops * gap + gap
 
