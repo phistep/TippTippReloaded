@@ -5,10 +5,10 @@ local menu = {}
 function menu:draw()
 	love.graphics.setColor(255, 255, 255)
 
-	love.graphics.setFont(love.graphics.newFont(30))
+	love.graphics.setNewFont(30)
 	love.graphics.print("Tipp Tipp Reloaded", 50, 25)
 
-	love.graphics.setFont(love.graphics.newFont(14))
+	love.graphics.setNewFont(14)
 	love.graphics.print(
 [[
 Hit the Böbbels™ using [A] [S] [D] and don't let them pass a whole circle!

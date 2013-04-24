@@ -8,6 +8,7 @@ local game = {}
 
 function game:init()
 	self.debug = true
+	self.pause = false
 
 	self.hit_offset = math.rad(5)
 	self.angular_velocity = math.rad(30)
@@ -58,37 +59,43 @@ function game:draw()
 		self.drawing:scoreboard(self.score:get_score(), self.score:get_multiplier(), self.score:get_spree(), self.score:get_max_spree())
 		self.drawing:muted(self.synth:is_muted())
 		self.drawing:debug(self)
+
+		if self.pause then
+			self.drawing:pause()
+		end
 	end)
 end
 
 function game:update(dt)
-	-- Updating gamevars
-	self:update_gamespeed(dt)
+	if not self.pause then
+		-- Updating gamevars
+		self:update_gamespeed(dt)
 
-	-- Updating bobbels
-	for _, bbl in pairs(self.bobbels) do
-		bbl:update(self, dt)
+		-- Updating bobbels
+		for _, bbl in pairs(self.bobbels) do
+			bbl:update(self, dt)
+		end
+
+		-- Spawning new bobbels
+		self:spawn_bobbel(dt)
+
+		-- Removing bobbels
+		self:terminate_bobbel()
+
+		-- Change controller position
+		self:update_controller(dt)
+
+		if love.keyboard.isDown('w') then
+			self:change_controller_angle(dt * -self.key_forward_movement)
+		end
+
+		if love.keyboard.isDown('c') then
+			self:change_controller_angle(dt * self.key_forward_movement)
+		end
+
+		-- change values
+		self:debugging_change_values(dt)
 	end
-
-	-- Spawning new bobbels
-	self:spawn_bobbel(dt)
-
-	-- Removing bobbels
-	self:terminate_bobbel()
-
-	-- Change controller position
-	self:update_controller(dt)
-
-	if love.keyboard.isDown('w') then
-		self:change_controller_angle(dt * -self.key_forward_movement)
-	end
-
-	if love.keyboard.isDown('c') then
-		self:change_controller_angle(dt * self.key_forward_movement)
-	end
-
-	-- change values
-	self:debugging_change_values(dt)
 end
 
 function game:update_gamespeed(dt)
@@ -138,16 +145,18 @@ function game:remove_by_values(angle, track)
 end
 
 function game:keypressed(key)
-	for _, cont in ipairs(self.controller) do
-		if cont.key == key then
-			local track_bbl = self:get_by_track(self.bobbels, cont.track)
-			local hit_bbl = self:get_by_angle(track_bbl, cont.angle - self.hit_offset, 2*self.hit_offset)
-			if #hit_bbl > 0 then
-				self:hit(hit_bbl)
-			else
-				self:fail()
+	if not self.pause then
+		for _, cont in ipairs(self.controller) do
+			if cont.key == key then
+				local track_bbl = self:get_by_track(self.bobbels, cont.track)
+				local hit_bbl = self:get_by_angle(track_bbl, cont.angle - self.hit_offset, 2*self.hit_offset)
+				if #hit_bbl > 0 then
+					self:hit(hit_bbl)
+				else
+					self:fail()
+				end
+				cont.pressed = true
 			end
-			cont.pressed = true
 		end
 	end
 
@@ -156,6 +165,9 @@ function game:keypressed(key)
 	end
 	if key == "m" then
 		self.synth:toggle_mute()
+	end
+	if key == "n" then
+		self.pause = not self.pause
 	end
 	if key == "b" then
 		self.debug = not self.debug
