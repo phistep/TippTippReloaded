@@ -8,10 +8,10 @@ function menu:init()
 	self.body_font = love.graphics.newFont(14)
 
 	local xgame = love.graphics.getWidth()
-	local ygame = love.graphics.getHeight() / 2 + 30
+	local ygame = love.graphics.getHeight() / 2
 	local startgame = math.rad(0)
 	local stopgame = math.rad(180)
-	local rgame = nil --150
+	local rgame = 280
 	self.menugame = Menugame.create(xgame, ygame, startgame, stopgame, rgame)
 end
 
@@ -26,9 +26,17 @@ function menu:draw()
 	love.graphics.setFont(self.body_font)
 	love.graphics.printf(
 [[
-Hit the Böbbels™ using [A] [S] [D] (or [J] [K] [L] or [LEFT] [DOWN] [RIGHT]) and don't let them pass a whole circle!
+Hit the Böbbels™ using
+
+[A] [S] [D] or
+[J] [K] [L] or
+[LEFT] [DOWN] [RIGHT]
+
+Don't let them pass a whole circle!
+
 [M] to toggle mute.
 [N] to pause the game.
+[B] to toggle debug information.
 Press [Esc] in game to return to the menu.
 
 
