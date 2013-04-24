@@ -9,14 +9,17 @@ function menu:draw()
 	love.graphics.print("Tipp Tipp Reloaded", 50, 25)
 
 	love.graphics.setNewFont(14)
-	love.graphics.print(
+	love.graphics.printf(
 [[
-Hit the Böbbels™ using [A] [S] [D] and don't let them pass a whole circle!
-Press [Esc] in game to return to the menu.
+Hit the Böbbels™ using [A] [S] [D] (or [J] [K] [L] or [LEFT] [DOWN] [RIGHT]) and don't let them pass a whole circle!
 [M] to toggle mute.
-]], 50, 100)
-	love.graphics.print("Press any key to continue…", 50, 200)
-	love.graphics.print("Press [Esc] to quit the game", 50, 220)
+[N] to pause the game.
+Press [Esc] in game to return to the menu.
+
+
+Press any key to continue…
+Press [Esc] to quit the game
+]], 50, 100, love.graphics.getWidth() - 2 * 50)
 end
 
 function menu:keypressed(key)

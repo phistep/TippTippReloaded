@@ -23,22 +23,25 @@ function game:init()
 	self.min_velocity = -8 * self.hit_acceleration
 	self.key_forward_movement = math.rad(90)
 
-	self.bobbels = {}
-	self.controller = {}
-
 	self.drawing = Drawing.create()
 	self.score = Scoreboard.create()
 	self.spawner = Spawner.create(self.time_between_bobbels)
 	self.synth = Synth.create()
+
+	self.bobbels = {}
+	self.controller = {}
 
 	-- create controller bobbels
 	for i = 1, 3 do
 		self.controller[i] = Bobbel.create(math.rad(270), i-1)
 		self.controller[i].pressed = false
 	end
-	self.controller[1].key = 'd'
-	self.controller[2].key = 's'
-	self.controller[3].key = 'a'
+	self.controller[1].keys = { d = true, l = true, right = true }
+	self.controller[2].keys = { s = true, k = true, down = true }
+	self.controller[3].keys = { a = true, j = true, left = true }
+
+	self.keys_back = { ' ', 'rctrl' }
+	self.keys_forward = { 'w', 'i', 'up' }
 
 	-- drawing settings
 	self.drawing:init()
@@ -85,11 +88,11 @@ function game:update(dt)
 		-- Change controller position
 		self:update_controller(dt)
 
-		if love.keyboard.isDown('w') then
+		if love.keyboard.isDown(unpack(self.keys_forward)) and self.debug then
 			self:change_controller_angle(dt * -self.key_forward_movement)
 		end
 
-		if love.keyboard.isDown('c') then
+		if love.keyboard.isDown(unpack(self.keys_back)) then
 			self:change_controller_angle(dt * self.key_forward_movement)
 		end
 
@@ -147,7 +150,7 @@ end
 function game:keypressed(key)
 	if not self.pause then
 		for _, cont in ipairs(self.controller) do
-			if cont.key == key then
+			if cont.keys[key] then
 				local track_bbl = self:get_by_track(self.bobbels, cont.track)
 				local hit_bbl = self:get_by_angle(track_bbl, cont.angle - self.hit_offset, 2*self.hit_offset)
 				if #hit_bbl > 0 then
@@ -176,7 +179,7 @@ end
 
 function game:keyreleased(key)
 	for _, cont in ipairs(self.controller) do
-		if cont.key == key then
+		if cont.keys[key] then
 			cont.pressed = false
 		end
 	end
