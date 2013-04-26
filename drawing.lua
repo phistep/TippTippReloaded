@@ -16,14 +16,13 @@ function Drawing.create()
 	drawing.color_scoreboard = { r = 255, g = 50, b = 0 }
 	drawing.color_muted = { r = 50, g = 255, b = 23 }
 	drawing.color_pause = { r = 10, g = 10, b = 10 }
-	drawing.color_pause_font = { r = 255, g = 50, b = 0 }
+	drawing.color_pause_font = { r = 50, g = 255, b = 0 }
 	drawing.color_debugging = { r = 255, g = 255, b = 255 }
 	drawing.color_bobbel_inside_canvas = { r = 255, g = 255, b = 255 }
 	drawing.color_controller_inside_canvas = { r = 255, g = 255, b = 255 }
 
 	drawing.bobbel_line_width = 3
 	drawing.gamefield_line_width = 2
-	drawing.pause_font = love.graphics.newFont(30)
 
 	drawing.bobbel_radius = 15
 	drawing.gamefield_radius = 200
@@ -43,6 +42,7 @@ function Drawing.create()
 	drawing.font_score = love.graphics.newFont("assets/polentical_neon_bold.ttf", 50)
 	drawing.font_spree = love.graphics.newFont("assets/polentical_neon_bold.ttf", 30)
 	drawing.font_mute = love.graphics.newFont("assets/polentical_neon_bold_italic.ttf", 14)
+	drawing.font_pause = love.graphics.newFont("assets/polentical_neon_bold_italic.ttf", 80)
 
 	return drawing
 end
@@ -186,12 +186,12 @@ function Drawing:pause()
 	love.graphics.setColor(self.color_pause.r, self.color_pause.g, self.color_pause.b, 200)
 	love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 
-	local xoffset = 100
+	local xoffset = 10
 	--local yoffset = self.pause_font:getLineHeight()
-	local yoffset = 20
-	love.graphics.setFont(self.pause_font)
+	local yoffset = 50
+	love.graphics.setFont(self.font_pause)
 	love.graphics.setColor(self.color_pause_font.r, self.color_pause_font.g, self.color_pause_font.b, 255)
-	love.graphics.printf("Pause", self.center.x - xoffset, self.center.y - yoffset, 2 * xoffset, 'center')
+	love.graphics.printf("Pause", xoffset, self.center.y - yoffset, love.graphics.getWidth() - 2 * xoffset, 'center')
 	love.graphics.setNewFont()
 end
 
