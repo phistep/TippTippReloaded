@@ -1,3 +1,4 @@
+require 'animations'
 require 'bobbel'
 require 'drawing'
 require 'scoreboard'
@@ -23,6 +24,7 @@ function game:init()
 	self.min_velocity = -8 * self.hit_acceleration
 	self.key_forward_movement = math.rad(90)
 
+	self.animations = Animations.create()
 	self.drawing = Drawing.create()
 	self.score = Scoreboard.create()
 	self.spawner = Spawner.create(self.time_between_bobbels)
@@ -57,6 +59,7 @@ function game:draw()
 
 		self.drawing:bobbels(self.bobbels)
 		self.drawing:controller(self.controller)
+		self.animations:draw()
 		self.drawing:origin()
 
 		self.drawing:scoreboard(self.score:get_score(), self.score:get_multiplier(), self.score:get_spree(), self.score:get_max_spree())
@@ -87,6 +90,9 @@ function game:update(dt)
 
 		-- Change controller position
 		self:update_controller(dt)
+
+		-- Animations!!
+		self.animations:update(dt)
 
 		if love.keyboard.isDown(unpack(self.keys_forward)) and self.debug then
 			self:change_controller_angle(dt * -self.key_forward_movement)
