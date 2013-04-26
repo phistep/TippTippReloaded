@@ -1,3 +1,5 @@
+require "moan"
+
 Synth = {}
 Synth.__index = Synth
 
@@ -5,16 +7,11 @@ function Synth.create()
 	local synth = {}
 	setmetatable(synth, Synth)
 
-	synth.len = 0.3
-	synth.rate = 44100
-	synth.bits = 16
-	synth.channel = 1
-
 	synth.mute = false
 	synth.sources = {
-		synth:createSource(1),
-		synth:createSource(4),
-		synth:createSource(7),
+		synth:createSource("c"),
+		synth:createSource("e"),
+		synth:createSource("g"),
 	}
 
 	return synth
@@ -26,19 +23,18 @@ function Synth:play(track)
 	end
 end
 
-function Synth:createSource(n)
-	local soundData = love.sound.newSoundData(self.len * self.rate, self.rate, self.bits, self.channel)
-	local amplitude = 1.0
-	local osc = self:oscillator(get_frequency(n), saw)
-	local osc2 = self:oscillator(get_frequency(n + 3), saw)
-	local osc3 = self:oscillator(get_frequency(n + 7), saw)
-
-	for i = 1, self.len * self.rate do
-		local sample = amplitude * (osc() + osc2() + osc3()) / 3
-		soundData:setSample(i, sample)
-	end
-
-	return love.audio.newSource(soundData)
+function Synth:createSource(pitch)
+	local len = 0.2
+	local len_unit = 0.2/20
+	local amp = 0.7
+	local data = Moan.newSample(
+		Moan.compress(Moan.envelope(
+			Moan.osc.sin(Moan.pitch(pitch, 3), amp),
+			Moan.env.adsr(len_unit * 6, len_unit * 4, len_unit*7, len_unit*3, amp*3.0, amp),
+			Moan.env.fall(0.2, 0.05)
+		)
+	), len)
+	return love.audio.newSource(data)
 end
 
 function Synth:is_muted()
@@ -49,29 +45,3 @@ function Synth:toggle_mute(new_mute)
 	self.mute = new_mute or not self.mute
 end
 
-function Synth:oscillator(freq, f)
-	local phase = 0
-	return function()
-		phase = phase + 2 * math.pi/self.rate
-		if phase >= 2 * math.pi then
-			phase = phase - 2 * math.pi
-		end
-		return f(freq * phase)
-	end
-end
-
-function rect(x)
-	if x % (2 * math.pi) < math.pi then
-		return 1
-	else
-		return -1
-	end
-end
-
-function saw(x)
-	return (x % (2 * math.pi)) / (2 * math.pi)
-end
-
-function get_frequency(n)
-	return 440 * math.pow(2, (n - 22)/12)
-end

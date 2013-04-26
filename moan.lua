@@ -54,7 +54,7 @@ function Moan.env.rise(len, delay)
 	return function(t) return math.max(0, math.min(1, (t-delay)/len)) end
 end
 
-function Moan.env.fall(l, d)
+function Moan.env.fall(len, delay)
 	local delay = delay or 0
 	return function(t) return math.min(1, math.max(0, 1-(t-delay)/len)) end
 end
