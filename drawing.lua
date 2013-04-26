@@ -89,6 +89,7 @@ function Drawing:load_shaders()
 	self.glowmap_canvas = love.graphics.newCanvas(0.5 * love.graphics.getWidth(), 0.5 * love.graphics.getHeight())
 	self.blur = love.graphics.newPixelEffect("blur.glsl")
 	self.bloom = love.graphics.newPixelEffect("bloom.glsl")
+	self.background = love.graphics.newPixelEffect("background.glsl")
 end
 
 function Drawing:let_glow(content)
@@ -231,4 +232,11 @@ function Drawing:debug(game)
 		"\n[ - ]  [  max_velocity: "..tostring(game.max_velocity)..
 		"\n[=]  ]  min_velocity: "..tostring(game.min_velocity), xcoord, ycoord, boxwidth, 'left')
 	end
+end
+
+function Drawing:draw_background(time)
+	self.background:send("time", time)
+	love.graphics.setPixelEffect(self.background)
+	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+	love.graphics.setPixelEffect()
 end

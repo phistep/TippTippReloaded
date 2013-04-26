@@ -31,6 +31,8 @@ function game:init()
 	self.bobbels = {}
 	self.controller = {}
 
+	self.time = 0
+
 	-- create controller bobbels
 	for i = 1, 3 do
 		self.controller[i] = Bobbel.create(math.rad(270), i-1)
@@ -53,6 +55,8 @@ end
 
 function game:draw()
 	self.drawing:let_glow(function()
+		self.drawing:draw_background(self.time)
+
 		self.drawing:gamefield()
 
 		self.drawing:bobbels(self.bobbels)
@@ -71,6 +75,8 @@ end
 
 function game:update(dt)
 	if not self.pause then
+		self.time = self.time + dt
+
 		-- Updating gamevars
 		self:update_gamespeed(dt)
 
