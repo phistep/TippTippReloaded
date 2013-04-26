@@ -4,8 +4,10 @@ local game = require 'game'
 local menu = {}
 
 function menu:init()
-	self.title_font = love.graphics.newFont(30)
-	self.body_font = love.graphics.newFont(14)
+	self.title_font = love.graphics.newFont("assets/polentical_neon_bold.ttf", 70)
+	self.subtitle_font = love.graphics.newFont("assets/polentical_neon_bold_italic.ttf", 40)
+	self.body_font = love.graphics.newFont("assets/polentical_neon_bold.ttf", 16)
+	self.credits_font = love.graphics.newFont(8)
 
 	local xgame = love.graphics.getWidth()
 	local ygame = love.graphics.getHeight() / 2
@@ -21,7 +23,10 @@ function menu:draw()
 	love.graphics.setColor(255, 255, 255)
 
 	love.graphics.setFont(self.title_font)
-	love.graphics.print("Tipp Tipp Reloaded", 50, 25)
+	love.graphics.print("TippTipp", 20, 0)
+
+	love.graphics.setFont(self.subtitle_font)
+	love.graphics.print("Reloaded", 215, 65)
 
 	love.graphics.setFont(self.body_font)
 	love.graphics.printf(
@@ -42,7 +47,11 @@ Press [Esc] in game to return to the menu.
 
 Press any key to continue…
 Press [Esc] to quit the game
-]], 50, 100, love.graphics.getWidth() - 2 * 50)
+]], 40, 140, love.graphics.getWidth() - 2 * 50)
+
+	love.graphics.setFont(self.credits_font)
+	love.graphics.print("Font: 'Polentical Neon' by Jayvee D. Enaguas (Grand Chaos), CC-BY-SA", 5, love.graphics.getHeight()-10)
+
 end
 
 function menu:update(dt)
