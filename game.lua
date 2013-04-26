@@ -155,10 +155,11 @@ function game:keypressed(key)
 				local hit_bbl = self:get_by_angle(track_bbl, cont.angle - self.hit_offset, 2*self.hit_offset)
 				if #hit_bbl > 0 then
 					self:hit(hit_bbl)
+					cont.hit = true
 				else
 					self:fail()
+					cont.fail = true
 				end
-				cont.pressed = true
 			end
 		end
 	end
@@ -180,7 +181,8 @@ end
 function game:keyreleased(key)
 	for _, cont in ipairs(self.controller) do
 		if cont.keys[key] then
-			cont.pressed = false
+			cont.hit = false
+			cont.fail = false
 		end
 	end
 end
