@@ -237,6 +237,7 @@ function game:hit(hit_bbl)
 		self.score:count_hit()
 		self:remove_by_values(hbbl.angle, hbbl.track)
 		self.synth:play(hbbl.track)
+		self.animations:add('hit', hbbl, self.drawing)
 	end
 	self:set_controller_velocity(self.controller_velocity + self.hit_acceleration)
 end
