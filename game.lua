@@ -210,10 +210,12 @@ end
 function game:change_controller_angle(delta_angle)
 	for _, bbl in ipairs(self.controller) do
 		local newangle = bbl.angle + delta_angle
-		if newangle > 0 and newangle < math.rad(360) then
+		if newangle > math.rad(360) then
+			self:lost()
+		elseif newangle > math.rad(0) then
 			bbl.angle = newangle
 		else
-			controller_velocity = 0
+			self:set_controller_velocity(0)
 		end
 	end
 end
@@ -240,6 +242,12 @@ end
 function game:fail()
 	self.score:count_miss()
 	self:set_controller_velocity(self.controller_velocity + self.fail_acceleration)
+end
+
+function game:lost()
+	if not self.debug then
+		print('lost the game')
+	end
 end
 
 function game:debugging_change_values(dt)
