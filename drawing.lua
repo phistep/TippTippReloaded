@@ -12,7 +12,8 @@ function Drawing.create()
 	drawing.color_origin = { r = 0, g = 0, b = 0 }
 	drawing.color_bobbel = { r = 0, g = 255, b = 0 }
 	drawing.color_controller = { r = 100, g = 100, b = 100 }
-	drawing.color_controller_pressed = { r = 255, g = 50, b = 0 }
+	drawing.color_controller_pressed_hit = { r = 255, g = 127, b = 0 }
+	drawing.color_controller_pressed_fail = { r = 255, g = 50, b = 0 }
 	drawing.color_scoreboard = { r = 255, g = 50, b = 0 }
 	drawing.color_muted = { r = 50, g = 255, b = 23 }
 	drawing.color_pause = { r = 10, g = 10, b = 10 }
@@ -134,8 +135,10 @@ end
 
 function Drawing:controller(controller)
 	for _, cont in ipairs(controller) do
-		if cont.pressed then
-			love.graphics.setColor(self.color_controller_pressed.r ,self.color_controller_pressed.g ,self.color_controller_pressed.b)
+		if cont.hit then
+			love.graphics.setColor(self.color_controller_pressed_hit.r ,self.color_controller_pressed_hit.g ,self.color_controller_pressed_hit.b)
+		elseif cont.fail then
+			love.graphics.setColor(self.color_controller_pressed_fail.r ,self.color_controller_pressed_fail.g ,self.color_controller_pressed_fail.b)
 		else
 			love.graphics.setColor(self.color_controller.r, self.color_controller.g, self.color_controller.b)
 		end
