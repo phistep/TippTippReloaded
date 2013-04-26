@@ -24,7 +24,7 @@ function Menugame.create(x, y, start, stop, r)
 
 	menugame.gamefield_radius = r or 200
 	menugame.bobbel_radius = 15 / 200 * menugame.gamefield_radius
-	menugame.track_distance = 25 / 200 * menugame.gamefield_radius
+	menugame.track_distance = 50 / 200 * menugame.gamefield_radius
 	menugame.center = {
 		x = x or love.graphics.getWidth() / 2,
 		y = y or love.graphics.getHeight() / 2
