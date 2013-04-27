@@ -232,7 +232,7 @@ end
 
 function game:hit(hit_bbl)
 	for _, hbbl in ipairs(hit_bbl) do
-		self.score:count_hit()
+		self.score:count_hit(self, hbbl)
 		self:remove_by_values(hbbl.angle, hbbl.track)
 		self.synth:play(hbbl.track)
 	end

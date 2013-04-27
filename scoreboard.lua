@@ -13,10 +13,13 @@ function Scoreboard.create()
 	return score
 end
 
-function Scoreboard:count_hit()
+function Scoreboard:count_hit(game, bbl)
 	local spree = self.spree
 	local multiplier = self.multiplier
-	self.score = self.score + multiplier
+	local accuracy_multiplier = 1 - math.abs(game.controller[1].angle - bbl.angle) / game.hit_offset + 0.5
+	local progress_multiplier = 1 - math.deg(game.controller[1].angle) / 360 + 0.5
+	local delta_score = math.floor(10 * multiplier * accuracy_multiplier * progress_multiplier + 0.5)
+	self.score = self.score + delta_score
 	spree = spree + 1
 
 	if spree > self.max_spree then
