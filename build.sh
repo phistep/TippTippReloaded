@@ -34,8 +34,27 @@ linux_build(){
 	chmod +x ${BUILD_DIR}${NAME}_linux
 }
 
+osx_build(){
+	cd $TMP_DIR
+	wget https://bitbucket.org/rude/love/downloads/love-$LOVE_VERSION-macosx-ub.zip
+	unzip love-$LOVE_VERSION-macosx-ub.zip
+	cd love.app/Contents
+	sed -i '' '74,101d' Info.plist
+	sed -i '' '9,37d' Info.plist
+	sed -i '' 's/org\.love2d\.love/de.ps0ke.tipptippreloaded/' Info.plist
+	sed -i '' 's/>LÖVE</>TippTippReloaded</' Info.plist
+	sed -i '' 's/LoVe/mett/' Info.plist
+	#sed -i '' 's/Love\.icns/icon.icns/' Info.plist
+	#cp ${SRC_DIR}/assets/ttr_icon_512.icns Resources/icon.icns
+	rm Resources/LoveDocument.icns
+	cp ${BUILD_DIR}${NAME}.love Resources/
+	cd $TMP_DIR
+	mv love.app ${BUILD_DIR}${NAME}.app
+}
+
 win_build x86
 win_build x64
 # linux_build
+osx_build
 
 rm -rf $TMP_DIR
