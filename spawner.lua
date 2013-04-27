@@ -62,13 +62,16 @@ function Spawner:random(max_loops)
 
 	if loops >= max_loops then
 		return nil, true
-	elseif t >= limit then
+	end
+
+	local tdiff = t - limit
+	if tdiff >= 0 then
 		self.last_bobbel = t
 
-		tracks = {}
+		local tracks = {}
 		for i = 0, 2 do
 			if math.random() < 0.4 then
-				table.insert(tracks, i)
+				tracks[i] = tdiff
 			end
 		end
 		return tracks
@@ -87,11 +90,14 @@ function Spawner:linear(max_loops, track)
 
 	if loops >= max_loops then
 		return nil, true
-	elseif t >= limit then
+	end
+
+	local tdiff = t - limit
+	if tdiff >= 0 then
 		self.last_bobbel = t
 
 		track = track or math.floor(self.last_new_function % 3)
-		return { track }
+		return { [track] = tdiff }
 	end
 end
 
@@ -109,16 +115,19 @@ function Spawner:saw(max_loops, orientation)
 
 	if loops >= max_loops then
 		return nil, true
-	elseif t >= limit then
+	end
+
+	local tdiff = t - limit
+	if tdiff >= 0 then
 		self.last_bobbel = t
 
 		local track = loops % 4
 		if track ~= 3 then
 			orientation = orientation or math.floor(self.last_new_function % 2)
 			if orientation == 0 then
-				return { track }
+				return { [track] = tdiff }
 			else
-				return { 2 - track }
+				return { [2 - track] = tdiff }
 			end
 		end
 	end
@@ -140,14 +149,18 @@ function Spawner:triangle(max_loops, orientation)
 
 	if loops >= max_loops then
 		return nil, true
-	elseif t >= limit then
+	end
+
+	local tdiff = t - limit
+	if tdiff >= 0 then
 		self.last_bobbel = t
 
 		orientation = orientation or math.floor(self.last_new_function % 2)
+		local track = math.abs((loops % 4 - 2))
 		if orientation == 0 then
-			return { math.abs((loops % 4 - 2)) }
+			return { [track] = tdiff }
 		else
-			return { 2 - math.abs((loops % 4 - 2)) }
+			return { [2 - track] = tdiff }
 		end
 	end
 end
@@ -165,11 +178,14 @@ function Spawner:oscilator(max_loops, blank_track)
 
 	if loops >= max_loops then
 		return nil, true
-	elseif t >= limit then
+	end
+
+	local tdiff = t - limit
+	if tdiff >= 0 then
 		self.last_bobbel = t
 
 		blank_track = blank_track or math.floor(self.last_new_function % 3)
 		local track = loops % 2 + 1
-		return { (blank_track + track) % 3 }
+		return { [(blank_track + track) % 3] = tdiff }
 	end
 end
