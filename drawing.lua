@@ -7,20 +7,26 @@ function Drawing.create()
         local drawing = {}
         setmetatable(drawing, Drawing)
 
+	local color1 = { r = 167, g = 69, b = 255 } -- green
+	local color2 = { r = 20, g = 128, b = 201 } -- red
+	local color3 = { r = 13, g = 194, b = 189 } -- gray
+	local color4 = { r = 255, g = 255, b = 255 } -- white
+	local color5 = { r = 240, g = 52, b = 173 }
+
 	drawing.color_background = { r = 10, g = 10, b = 10 }
-	drawing.color_gamefield = { r = 100, g = 100, b = 100 }
+	drawing.color_gamefield = color3
 	drawing.color_origin = { r = 0, g = 0, b = 0 }
-	drawing.color_bobbel = { r = 0, g = 255, b = 0 }
-	drawing.color_bobbel_special_activated = { r = 255, g = 255, b = 255 }
-	drawing.color_special_bobbel = { r = 255, g = 50, b = 0 }
-	drawing.color_controller = { r = 100, g = 100, b = 100 }
-	drawing.color_controller_pressed_hit = { r = 255, g = 127, b = 0 }
-	drawing.color_controller_pressed_fail = { r = 255, g = 50, b = 0 }
-	drawing.color_scoreboard = { r = 255, g = 50, b = 0 }
-	drawing.color_muted = { r = 50, g = 255, b = 23 }
-	drawing.color_special_available = { r = 50, g = 255, b = 23 }
+	drawing.color_bobbel = color1
+	drawing.color_bobbel_special_activated = color4
+	drawing.color_special_bobbel = color5
+	drawing.color_controller = color3
+	drawing.color_controller_pressed_hit = color5
+	drawing.color_controller_pressed_fail = color2
+	drawing.color_scoreboard = color2
+	drawing.color_muted = color1
+	drawing.color_special_available = color1
 	drawing.color_pause = { r = 10, g = 10, b = 10 }
-	drawing.color_pause_font = { r = 50, g = 255, b = 0 }
+	drawing.color_pause_font = color1
 	drawing.color_debugging = { r = 255, g = 255, b = 255 }
 	drawing.color_bobbel_inside_canvas = { r = 255, g = 255, b = 255 }
 	drawing.color_special_bobbel_inside_canvas = { r = 255, g = 255, b = 255 }
