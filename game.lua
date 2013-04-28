@@ -23,6 +23,12 @@ function game:init()
 	self.min_velocity = -8 * self.hit_acceleration
 	self.key_forward_movement = math.rad(90)
 
+	self.special_probability = 1
+	self.special_spree_length = 10
+
+	self.special_bobbel_spawned = 0
+	self.special_bobbel_hit = 0
+
 	self.drawing = Drawing.create()
 	self.score = Scoreboard.create()
 	self.spawner = Spawner.create(self.time_between_bobbels)
@@ -114,10 +120,24 @@ function game:spawn_bobbel(dt)
 		for trackno, tdiff in pairs(new_tracks) do
 			if trackno >= 0 and trackno <= 2 then
 				local new_bobbel = Bobbel.create(tdiff * self.angular_velocity, trackno)
+				new_bobbel = self:spawn_special(new_bobbel)
 				table.insert(self.bobbels, new_bobbel)
 			end
 		end
 	end
+end
+
+function game:spawn_special(bbl)
+	if self.special_bobbel_spawned == 0 and math.random() < self.special_probability then
+		self.special_bobbel_spawned = 1
+		bbl.special = self.special_bobbel_spawned
+	elseif self.special_bobbel_spawned == self.special_spree_length then
+		self.special_bobbel_spawned = 0
+	elseif self.special_bobbel_spawned > 0 then
+		self.special_bobbel_spawned = self.special_bobbel_spawned + 1
+		bbl.special = self.special_bobbel_spawned
+	end
+	return bbl
 end
 
 

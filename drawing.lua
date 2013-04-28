@@ -11,6 +11,7 @@ function Drawing.create()
 	drawing.color_gamefield = { r = 100, g = 100, b = 100 }
 	drawing.color_origin = { r = 0, g = 0, b = 0 }
 	drawing.color_bobbel = { r = 0, g = 255, b = 0 }
+	drawing.color_special_bobbel = { r = 255, g = 50, b = 0 }
 	drawing.color_controller = { r = 100, g = 100, b = 100 }
 	drawing.color_controller_pressed_hit = { r = 255, g = 127, b = 0 }
 	drawing.color_controller_pressed_fail = { r = 255, g = 50, b = 0 }
@@ -20,9 +21,11 @@ function Drawing.create()
 	drawing.color_pause_font = { r = 50, g = 255, b = 0 }
 	drawing.color_debugging = { r = 255, g = 255, b = 255 }
 	drawing.color_bobbel_inside_canvas = { r = 255, g = 255, b = 255 }
+	drawing.color_special_bobbel_inside_canvas = { r = 255, g = 255, b = 255 }
 	drawing.color_controller_inside_canvas = { r = 255, g = 255, b = 255 }
 
 	drawing.bobbel_line_width = 3
+	drawing.special_bobbel_line_width = 3
 	drawing.gamefield_line_width = 2
 
 	drawing.bobbel_radius = 15
@@ -31,6 +34,7 @@ function Drawing.create()
 	drawing.center = { x = love.graphics.getWidth() / 2, y = love.graphics.getHeight() / 2 }
 
 	drawing.bobbel_canvas = nil
+	drawing.special_bobbel_canvas = nil
 	drawing.controller_canvas = nil
 	drawing.glowing_canvas = nil
 	drawing.glowmap_canvas = nil
@@ -50,6 +54,7 @@ end
 
 function Drawing:init()
 	self:create_bobbel_canvas()
+	self:create_special_bobbel_canvas()
 	self:create_controller_canvas()
 	self:load_shaders()
 
@@ -69,6 +74,20 @@ function Drawing:create_bobbel_canvas()
 
 	love.graphics.setBlendMode('premultiplied')
 	glowShape('circle', 'line', self.bobbel_line_width, self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
+	love.graphics.setBlendMode(bmode)
+end
+
+function Drawing:create_special_bobbel_canvas()
+	local bmode = love.graphics.getBlendMode()
+
+	self.special_bobbel_canvas = love.graphics.newCanvas(2 * self.bobbel_radius, 2 * self.bobbel_radius)
+	love.graphics.setCanvas(self.special_bobbel_canvas)
+
+	love.graphics.setColor(self.color_special_bobbel_inside_canvas.r, self.color_special_bobbel_inside_canvas.g, self.color_special_bobbel_inside_canvas.b)
+	love.graphics.setLineWidth(self.special_bobbel_line_width)
+
+	love.graphics.setBlendMode('premultiplied')
+	glowShape('rectangle', 'line', self.special_bobbel_line_width, 5, 5, 2*(self.bobbel_radius-5), 2*(self.bobbel_radius-5))
 	love.graphics.setBlendMode(bmode)
 end
 
@@ -129,7 +148,13 @@ end
 function Drawing:bobbels(bobbels)
 	love.graphics.setColor(self.color_bobbel.r, self.color_bobbel.g, self.color_bobbel.b)
 	for _, bbl in ipairs(bobbels) do
-		bbl:draw(self)
+		if bbl.special then
+			love.graphics.setColor(self.color_special_bobbel.r, self.color_special_bobbel.g, self.color_special_bobbel.b)
+			bbl:draw(self, self.special_bobbel_canvas)
+			love.graphics.setColor(self.color_bobbel.r, self.color_bobbel.g, self.color_bobbel.b)
+		else
+			bbl:draw(self)
+		end
 	end
 end
 
