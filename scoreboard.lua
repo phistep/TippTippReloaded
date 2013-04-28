@@ -5,6 +5,7 @@ function Scoreboard.create()
 	local score = {}
 	setmetatable(score, Scoreboard)
 
+	score.multiplier_step = 5
 	score.special_multiplier = 32
 
 	score.score = 0
@@ -34,7 +35,7 @@ function Scoreboard:count_hit(game, bbl)
 		self.max_spree = spree
 	end
 
-	local multiplier = math.pow(2, math.floor(spree / 5))
+	local multiplier = math.pow(2, math.floor(spree / self.multiplier_step))
 	if multiplier > 16 then
 		multiplier = 16
 	end
