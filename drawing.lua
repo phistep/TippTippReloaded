@@ -17,6 +17,7 @@ function Drawing.create()
 	drawing.color_controller_pressed_fail = { r = 255, g = 50, b = 0 }
 	drawing.color_scoreboard = { r = 255, g = 50, b = 0 }
 	drawing.color_muted = { r = 50, g = 255, b = 23 }
+	drawing.color_special_available = { r = 50, g = 255, b = 23 }
 	drawing.color_pause = { r = 10, g = 10, b = 10 }
 	drawing.color_pause_font = { r = 50, g = 255, b = 0 }
 	drawing.color_debugging = { r = 255, g = 255, b = 255 }
@@ -47,6 +48,7 @@ function Drawing.create()
 	drawing.font_score = love.graphics.newFont("assets/polentical_neon_bold.ttf", 50)
 	drawing.font_spree = love.graphics.newFont("assets/polentical_neon_bold.ttf", 30)
 	drawing.font_mute = love.graphics.newFont("assets/polentical_neon_bold_italic.ttf", 14)
+	drawing.font_special_available = love.graphics.newFont("assets/polentical_neon_bold_italic.ttf", 14)
 	drawing.font_pause = love.graphics.newFont("assets/polentical_neon_bold_italic.ttf", 80)
 
 	return drawing
@@ -207,6 +209,14 @@ function Drawing:muted(muted)
 		love.graphics.setColor(self.color_muted.r, self.color_muted.g, self.color_muted.b)
 		love.graphics.setFont(self.font_mute)
 		love.graphics.print("muted, [M] to unmute", 10, 10)
+	end
+end
+
+function Drawing:special_available(available)
+	if available then
+		love.graphics.setColor(self.color_special_available.r, self.color_special_available.g, self.color_special_available.b)
+		love.graphics.setFont(self.font_special_available)
+		love.graphics.print("special multiplier available", 10, 30)
 	end
 end
 

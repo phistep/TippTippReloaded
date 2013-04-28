@@ -23,11 +23,12 @@ function game:init()
 	self.min_velocity = -8 * self.hit_acceleration
 	self.key_forward_movement = math.rad(90)
 
-	self.special_probability = 1
+	self.special_probability = 0.05
 	self.special_spree_length = 10
 
 	self.special_bobbel_spawned = 0
 	self.special_bobbel_hit = 0
+	self.special_available = false
 
 	self.drawing = Drawing.create()
 	self.score = Scoreboard.create()
@@ -67,6 +68,7 @@ function game:draw()
 
 		self.drawing:scoreboard(self.score:get_score(), self.score:get_multiplier(), self.score:get_spree(), self.score:get_max_spree())
 		self.drawing:muted(self.synth:is_muted())
+		self.drawing:special_available(self.special_available)
 		self.drawing:debug(self)
 
 		if self.pause then
@@ -130,6 +132,7 @@ end
 function game:spawn_special(bbl)
 	if self.special_bobbel_spawned == 0 and math.random() < self.special_probability then
 		self.special_bobbel_spawned = 1
+		self.special_bobbel_hit = 0
 		bbl.special = self.special_bobbel_spawned
 	elseif self.special_bobbel_spawned == self.special_spree_length then
 		self.special_bobbel_spawned = 0
@@ -145,7 +148,7 @@ function game:terminate_bobbel()
 	local old_bobbels = self:get_by_angle(self.bobbels, math.rad(360), math.rad(360))
 	for _, bbl in pairs(old_bobbels) do
 		self:remove_by_values(bbl.angle, bbl.track)
-		self:fail()
+		self:fail(bbl)
 	end
 end
 
@@ -252,6 +255,7 @@ end
 
 function game:hit(hit_bbl)
 	for _, hbbl in ipairs(hit_bbl) do
+		if hbbl.special then self:hit_special(hbbl) end
 		self.score:count_hit(self, hbbl)
 		self:remove_by_values(hbbl.angle, hbbl.track)
 		self.synth:play(hbbl.track)
@@ -259,7 +263,18 @@ function game:hit(hit_bbl)
 	self:set_controller_velocity(self.controller_velocity + self.hit_acceleration)
 end
 
-function game:fail()
+function game:hit_special(hit_bbl)
+	self.special_bobbel_hit = self.special_bobbel_hit + 1
+
+	if self.special_bobbel_hit == self.special_spree_length then
+		self.special_available = true
+	end
+end
+
+function game:fail(fail_bbl)
+	if not (fail_bbl and not fail_bbl.special) then
+		self.special_bobbel_hit = 0
+	end
 	self.score:count_miss()
 	self:set_controller_velocity(self.controller_velocity + self.fail_acceleration)
 end
