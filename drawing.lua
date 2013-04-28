@@ -11,6 +11,7 @@ function Drawing.create()
 	drawing.color_gamefield = { r = 100, g = 100, b = 100 }
 	drawing.color_origin = { r = 0, g = 0, b = 0 }
 	drawing.color_bobbel = { r = 0, g = 255, b = 0 }
+	drawing.color_bobbel_special_activated = { r = 255, g = 255, b = 255 }
 	drawing.color_special_bobbel = { r = 255, g = 50, b = 0 }
 	drawing.color_controller = { r = 100, g = 100, b = 100 }
 	drawing.color_controller_pressed_hit = { r = 255, g = 127, b = 0 }
@@ -147,13 +148,18 @@ function Drawing:gamefield()
 	end
 end
 
-function Drawing:bobbels(bobbels)
-	love.graphics.setColor(self.color_bobbel.r, self.color_bobbel.g, self.color_bobbel.b)
+function Drawing:bobbels(bobbels, special_activated)
+	local bobbel_color = self.color_bobbel
+	if special_activated then
+		bobbel_color = self.color_bobbel_special_activated
+	end
+	love.graphics.setColor(bobbel_color.r, bobbel_color.g, bobbel_color.b)
+
 	for _, bbl in ipairs(bobbels) do
 		if bbl.special then
 			love.graphics.setColor(self.color_special_bobbel.r, self.color_special_bobbel.g, self.color_special_bobbel.b)
 			bbl:draw(self, self.special_bobbel_canvas)
-			love.graphics.setColor(self.color_bobbel.r, self.color_bobbel.g, self.color_bobbel.b)
+			love.graphics.setColor(bobbel_color.r, bobbel_color.g, bobbel_color.b)
 		else
 			bbl:draw(self)
 		end
@@ -216,7 +222,7 @@ function Drawing:special_available(available)
 	if available then
 		love.graphics.setColor(self.color_special_available.r, self.color_special_available.g, self.color_special_available.b)
 		love.graphics.setFont(self.font_special_available)
-		love.graphics.print("special multiplier available", 10, 30)
+		love.graphics.print("use [SHIFT] to activate special multiplier", 10, 30)
 	end
 end
 
@@ -267,6 +273,7 @@ function Drawing:debug(game)
 		"\n\n[9] [O] hit_acceleration: "..tostring(game.hit_acceleration)..
 		"\n[0] [P] fail_acceleration: "..tostring(game.fail_acceleration)..
 		"\n[ - ]  [  max_velocity: "..tostring(game.max_velocity)..
-		"\n[=]  ]  min_velocity: "..tostring(game.min_velocity), xcoord, ycoord, boxwidth, 'left')
+		"\n[=]  ]  min_velocity: "..tostring(game.min_velocity)
+		, xcoord, ycoord, boxwidth, 'left')
 	end
 end

@@ -23,12 +23,16 @@ function game:init()
 	self.min_velocity = -8 * self.hit_acceleration
 	self.key_forward_movement = math.rad(90)
 
-	self.special_probability = 0.05
+	self.special_probability = 0.005
 	self.special_spree_length = 10
+	self.special_duration = 10
 
 	self.special_bobbel_spawned = 0
 	self.special_bobbel_hit = 0
 	self.special_available = false
+	self.special_activated = false
+	self.special_time_activated = 0
+	self.total_time = 0
 
 	self.drawing = Drawing.create()
 	self.score = Scoreboard.create()
@@ -47,6 +51,7 @@ function game:init()
 	self.controller[2].keys = { s = true, k = true, down = true }
 	self.controller[3].keys = { a = true, j = true, left = true }
 
+	self.keys_activate_special = { rshift = true, lshift = true }
 	self.keys_back = { ' ', 'rctrl' }
 	self.keys_forward = { 'w', 'i', 'up' }
 
@@ -62,7 +67,7 @@ function game:draw()
 	self.drawing:let_glow(function()
 		self.drawing:gamefield()
 
-		self.drawing:bobbels(self.bobbels)
+		self.drawing:bobbels(self.bobbels, self.special_activated)
 		self.drawing:controller(self.controller)
 		self.drawing:origin()
 
@@ -79,6 +84,9 @@ end
 
 function game:update(dt)
 	if not self.pause then
+		-- Updating time
+		self.total_time = self.total_time + dt
+
 		-- Updating gamevars
 		self:update_gamespeed(dt)
 
@@ -92,6 +100,9 @@ function game:update(dt)
 
 		-- Removing bobbels
 		self:terminate_bobbel()
+
+		-- Deactivate special if special_duration is over
+		self:deactivate_special()
 
 		-- Change controller position
 		self:update_controller(dt)
@@ -187,6 +198,9 @@ function game:keypressed(key)
 		end
 	end
 
+	if self.keys_activate_special[key] and self.special_available then
+		self:activate_special()
+	end
 	if key == "escape" then
 		Gamestate.switch(self.menu)
 	end
@@ -282,6 +296,20 @@ end
 function game:lost()
 	if not self.debug then
 		print('lost the game')
+	end
+end
+
+function game:activate_special()
+	self.special_activated = true
+	self.special_time_activated = self.total_time
+	self.score:set_special_activated(true)
+	self.special_available = false
+end
+
+function game:deactivate_special()
+	if self.special_activated and self.total_time - self.special_time_activated > self.special_duration then
+		self.special_activated = false
+		self.score:set_special_activated(false)
 	end
 end
 
