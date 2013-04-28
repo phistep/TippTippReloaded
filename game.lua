@@ -71,7 +71,7 @@ function game:draw()
 		self.drawing:controller(self.controller)
 		self.drawing:origin()
 
-		self.drawing:scoreboard(self.score:get_score(), self.score:get_multiplier(), self.score:get_spree(), self.score:get_max_spree())
+		self.drawing:scoreboard(self.score:get_score(), self.score:get_multiplier(), self.score:get_spree(), self.score:get_max_spree(), self.total_time)
 		self.drawing:muted(self.synth:is_muted())
 		self.drawing:special_available(self.special_available)
 		self.drawing:debug(self)

@@ -48,6 +48,7 @@ function Drawing.create()
 	drawing.font_multi = love.graphics.newFont("assets/polentical_neon_bold.ttf", 100)
 	drawing.font_score = love.graphics.newFont("assets/polentical_neon_bold.ttf", 50)
 	drawing.font_spree = love.graphics.newFont("assets/polentical_neon_bold.ttf", 30)
+	drawing.font_time = love.graphics.newFont("assets/polentical_neon_bold.ttf", 30)
 	drawing.font_mute = love.graphics.newFont("assets/polentical_neon_bold_italic.ttf", 14)
 	drawing.font_special_available = love.graphics.newFont("assets/polentical_neon_bold_italic.ttf", 14)
 	drawing.font_pause = love.graphics.newFont("assets/polentical_neon_bold_italic.ttf", 80)
@@ -188,7 +189,7 @@ function Drawing:origin()
 	end
 end
 
-function Drawing:scoreboard(score, multiplier, spree, max_spree)
+function Drawing:scoreboard(score, multiplier, spree, max_spree, time)
 	local x = 10
 	local y = 10
 
@@ -198,16 +199,21 @@ function Drawing:scoreboard(score, multiplier, spree, max_spree)
 	-- multiplier
 	local inner_circle_radius = self.gamefield_radius - 2*self.track_distance
 	love.graphics.setFont(self.font_multi)
-	love.graphics.printf(tostring(multiplier).."x", love.graphics.getWidth()/2 - inner_circle_radius, love.graphics.getHeight()/2 - 60, 2*inner_circle_radius, "center")
+	love.graphics.printf(multiplier.."x", love.graphics.getWidth()/2 - inner_circle_radius, love.graphics.getHeight()/2 - 60, 2*inner_circle_radius, "center")
 
 	-- score
 	local score_margin = 10
 	love.graphics.setFont(self.font_score)
-	love.graphics.printf(tostring(score), score_margin, 20, love.graphics.getWidth() - 2*score_margin, "center")
+	love.graphics.printf(score, score_margin, 20, love.graphics.getWidth() - 2*score_margin, "center")
 
 	-- spree
 	love.graphics.setFont(self.font_spree)
-	love.graphics.printf(tostring(spree), score_margin, love.graphics.getHeight()/2 - self.gamefield_radius, 260, "right")
+	love.graphics.printf(spree, score_margin, love.graphics.getHeight()/2 - self.gamefield_radius, 260, "right")
+
+	-- time
+	local timestring = string.format("%02d:%02d", time / 60, time % 60)
+	love.graphics.setFont(self.font_time)
+	love.graphics.printf(timestring, 530, love.graphics.getHeight()/2 - self.gamefield_radius, 260, "left")
 end
 
 function Drawing:muted(muted)
