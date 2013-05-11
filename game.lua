@@ -23,7 +23,7 @@ function game:init()
 	self.min_velocity = -8 * self.hit_acceleration
 	self.key_forward_movement = math.rad(90)
 
-	self.special_probability = 0.005
+	self.special_timesteps = 60
 	self.special_spree_length = 10
 	self.special_duration = 10
 
@@ -141,7 +141,7 @@ function game:spawn_bobbel(dt)
 end
 
 function game:spawn_special(bbl)
-	if self.special_bobbel_spawned == 0 and math.random() < self.special_probability then
+	if self.special_bobbel_spawned == 0 and self.total_time % self.special_timesteps < 1 and self.total_time >= self.special_timesteps then
 		self.special_bobbel_spawned = 1
 		self.special_bobbel_hit = 0
 		bbl.special = self.special_bobbel_spawned
