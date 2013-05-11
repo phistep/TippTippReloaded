@@ -9,15 +9,11 @@ local game = {}
 function game:init()
 	self.debug = true
 	self.scorescreen = require 'scorescreen'
-	self.pause = false
 
 	self.hit_offset = math.rad(5)
-	self.angular_velocity = math.rad(30)
 	self.angular_velocity_modifier = 0.003
-	self.time_between_bobbels = 0.9
 	self.time_between_bobbels_modifier = 0.003
 
-	self.controller_velocity = 0
 	self.hit_acceleration = 0.02
 	self.fail_acceleration = -2 * self.hit_acceleration
 	self.max_velocity = 3 * self.hit_acceleration
@@ -28,6 +24,27 @@ function game:init()
 	self.special_spree_length = 10
 	self.special_duration = 10
 
+	self.drawing = Drawing.create()
+	self.score = nil
+	self.spawner = nil
+	self.synth = Synth.create()
+
+	self.keys_activate_special = { rshift = true, lshift = true }
+	self.keys_back = { ' ', 'rctrl' }
+	self.keys_forward = { 'w', 'i', 'up' }
+
+	-- drawing settings
+	self.drawing:init()
+end
+
+function game:enter(game_menu)
+	self.menu = game_menu
+
+	self.pause = false
+	self.angular_velocity = math.rad(30)
+	self.time_between_bobbels = 0.9
+	self.controller_velocity = 0
+
 	self.special_bobbel_spawned = 0
 	self.special_bobbel_hit = 0
 	self.special_available = false
@@ -35,10 +52,8 @@ function game:init()
 	self.special_time_activated = 0
 	self.total_time = 0
 
-	self.drawing = Drawing.create()
 	self.score = Scoreboard.create()
 	self.spawner = Spawner.create(self.time_between_bobbels)
-	self.synth = Synth.create()
 
 	self.bobbels = {}
 	self.controller = {}
@@ -51,17 +66,6 @@ function game:init()
 	self.controller[1].keys = { d = true, l = true, right = true }
 	self.controller[2].keys = { s = true, k = true, down = true }
 	self.controller[3].keys = { a = true, j = true, left = true }
-
-	self.keys_activate_special = { rshift = true, lshift = true }
-	self.keys_back = { ' ', 'rctrl' }
-	self.keys_forward = { 'w', 'i', 'up' }
-
-	-- drawing settings
-	self.drawing:init()
-end
-
-function game:enter(game_menu)
-	self.menu = game_menu
 end
 
 function game:draw()
