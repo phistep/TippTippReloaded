@@ -8,6 +8,7 @@ local game = {}
 
 function game:init()
 	self.debug = true
+	self.scorescreen = require 'scorescreen'
 	self.pause = false
 
 	self.hit_offset = math.rad(5)
@@ -71,7 +72,7 @@ function game:draw()
 		self.drawing:controller(self.controller)
 		self.drawing:origin()
 
-		self.drawing:scoreboard(self.score:get_score(), self.score:get_multiplier(), self.score:get_spree(), self.score:get_max_spree(), self.total_time)
+		self.drawing:scoreboard(self:get_score())
 		self.drawing:muted(self.synth:is_muted())
 		self.drawing:special_available(self.special_available)
 		self.drawing:debug(self)
@@ -153,7 +154,6 @@ function game:spawn_special(bbl)
 	end
 	return bbl
 end
-
 
 function game:terminate_bobbel()
 	local old_bobbels = self:get_by_angle(self.bobbels, math.rad(360), math.rad(360))
@@ -295,7 +295,7 @@ end
 
 function game:lost()
 	if not self.debug then
-		print('lost the game')
+		Gamestate.switch(self.scorescreen, self.menu, self:get_score())
 	end
 end
 
@@ -311,6 +311,10 @@ function game:deactivate_special()
 		self.special_activated = false
 		self.score:set_special_activated(false)
 	end
+end
+
+function game:get_score()
+	return self.score:get_score(), self.score:get_multiplier(), self.score:get_spree(), self.score:get_max_spree(), self.total_time
 end
 
 function game:debugging_change_values(dt)

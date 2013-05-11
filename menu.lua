@@ -1,9 +1,10 @@
 require 'menugame'
-local game = require 'game'
 
 local menu = {}
 
 function menu:init()
+	self.game = require 'game'
+
 	self.title_font = love.graphics.newFont("assets/polentical_neon_bold.ttf", 70)
 	self.subtitle_font = love.graphics.newFont("assets/polentical_neon_bold_italic.ttf", 40)
 	self.body_font = love.graphics.newFont("assets/polentical_neon_bold.ttf", 16)
@@ -62,7 +63,7 @@ function menu:keypressed(key)
 	if key == "escape" then
 		love.event.push('quit')
 	else
-		Gamestate.switch(game, self)
+		Gamestate.switch(self.game)
 	end
 end
 
