@@ -7,11 +7,11 @@ function Drawing.create()
         local drawing = {}
         setmetatable(drawing, Drawing)
 
-	local color1 = { r = 167, g = 69, b = 255 } -- green
-	local color2 = { r = 20, g = 128, b = 201 } -- red
-	local color3 = { r = 13, g = 194, b = 189 } -- gray
+	local color1 = { r = 167, g = 69, b = 255 } -- bobbels, muted, pause
+	local color2 = { r = 20, g = 128, b = 201 } -- scores, controller when pressed and failed
+	local color3 = { r = 13, g = 194, b = 189 } -- gamefield, controller
 	local color4 = { r = 255, g = 255, b = 255 } -- white
-	local color5 = { r = 240, g = 52, b = 173 }
+	local color5 = { r = 240, g = 52, b = 173 } -- bobbels when special activated, controller when pressed and hit
 
 	drawing.color_background = { r = 10, g = 10, b = 10 }
 	drawing.color_gamefield = color3

@@ -15,12 +15,12 @@ function Menugame.create(x, y, start, stop, r)
 	menugame.bobbels = {}
 
 	-- drawing settings
-	menugame.color_gamefield = { r = 100, g = 100, b = 100 }
-	menugame.color_bobbel = { r = 0, g = 255, b = 0 }
+	menugame.color_gamefield = { r = 13, g = 194, b = 189 }
+	menugame.color_bobbel = { r = 167, g = 69, b = 255 }
 	menugame.color_bobbel_inside_canvas = { r = 255, g = 255, b = 255 }
 
-	menugame.bobbel_line_width = 3
-	menugame.gamefield_line_width = 2
+	menugame.bobbel_line_width = 5
+	menugame.gamefield_line_width = 3
 
 	menugame.gamefield_radius = r or 200
 	menugame.bobbel_radius = 15 / 200 * menugame.gamefield_radius
