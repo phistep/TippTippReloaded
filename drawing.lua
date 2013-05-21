@@ -223,10 +223,21 @@ function Drawing:scoreboard(score, multiplier, spree, max_spree, time)
 end
 
 function Drawing:muted(muted)
-	if muted then
-		love.graphics.setColor(self.color_muted.r, self.color_muted.g, self.color_muted.b)
-		love.graphics.setFont(self.font_mute)
-		love.graphics.print("muted, [M] to unmute", 10, 10)
+	local x = 10
+	local y = 10
+
+	love.graphics.setColor(self.color_muted.r, self.color_muted.g, self.color_muted.b)
+	love.graphics.rectangle('fill', x, y + 5, 5, 10)
+	love.graphics.polygon('fill',
+		x + 5, y + 5,
+		x + 10, y,
+		x + 10, y + 20,
+		x + 5, y + 15
+	)
+	if not muted then
+		for i = 5, 13, 4 do
+			drawArc(x + 10, y + 10, i, math.rad(-45), math.rad(45), 20)
+		end
 	end
 end
 

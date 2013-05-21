@@ -87,3 +87,16 @@ function arc(x, y, radius, angle1, angle2, segments)
 	end
 	love.graphics.setColor(r, g, b, a)
 end
+
+function drawArc(x, y, r, angle1, angle2, segments)
+	segments = segments or r
+	local i = angle1
+	local j = 0
+	local step = 2 * math.pi / segments
+
+	while i < angle2 do
+		j = angle2 - i < step and angle2 or i + step
+		love.graphics.line(x + (math.cos(i) * r), y - (math.sin(i) * r), x + (math.cos(j) * r), y - (math.sin(j) * r))
+		i = j
+	end
+end
