@@ -4,7 +4,7 @@ require 'glowshapes'
 Menugame = {}
 Menugame.__index = Menugame
 
-function Menugame.create(x, y, start, stop, r)
+function Menugame.create(x, y, r, start, stop)
 	local menugame = {}
 	setmetatable(menugame, Menugame)
 
@@ -164,23 +164,13 @@ function Menugame:gamefield()
 	love.graphics.setLineWidth(self.gamefield_line_width)
 
 	for i = 0, 2 do
-		--glowShape('circle', 'line', self.gamefield_line_width, self.center.x, self.center.y, self.gamefield_radius - i * self.track_distance)
-		love.graphics.circle(
-			'line',
-			self.center.x,
-			self.center.y,
-			self.gamefield_radius - i * self.track_distance
-		)
---[[
-		love.graphics.arc(
-			'line',
+		drawArc(
 			self.center.x,
 			self.center.y,
 			self.gamefield_radius - i * self.track_distance,
-			self.start + math.rad(90),
-			self.stop + math.rad(90)
+			math.rad(360) - self.stop - math.rad(90),
+			math.rad(360) - self.start - math.rad(90)
 		)
-]]--
 	end
 end
 

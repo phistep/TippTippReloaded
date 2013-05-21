@@ -15,7 +15,7 @@ function menu:init()
 	local startgame = math.rad(0)
 	local stopgame = math.rad(180)
 	local rgame = 280
-	self.menugame = Menugame.create(xgame, ygame, startgame, stopgame, rgame)
+	self.menugame = Menugame.create(xgame, ygame, rgame, startgame, stopgame)
 end
 
 function menu:draw()
