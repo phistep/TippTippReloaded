@@ -8,15 +8,12 @@ local game = {}
 
 function game:init()
 	self.debug = true
-	self.pause = false
+	self.scorescreen = require 'scorescreen'
 
 	self.hit_offset = math.rad(5)
-	self.angular_velocity = math.rad(30)
 	self.angular_velocity_modifier = 0.003
-	self.time_between_bobbels = 0.9
 	self.time_between_bobbels_modifier = 0.003
 
-	self.controller_velocity = 0
 	self.hit_acceleration = 0.02
 	self.fail_acceleration = -2 * self.hit_acceleration
 	self.max_velocity = 3 * self.hit_acceleration
@@ -27,6 +24,27 @@ function game:init()
 	self.special_spree_length = 10
 	self.special_duration = 10
 
+	self.drawing = Drawing.create()
+	self.score = nil
+	self.spawner = nil
+	self.synth = Synth.create()
+
+	self.keys_activate_special = { rshift = true, lshift = true }
+	self.keys_back = { ' ', 'rctrl' }
+	self.keys_forward = { 'w', 'i', 'up' }
+
+	-- drawing settings
+	self.drawing:init()
+end
+
+function game:enter(game_menu)
+	self.menu = game_menu
+
+	self.pause = false
+	self.angular_velocity = math.rad(30)
+	self.time_between_bobbels = 0.9
+	self.controller_velocity = 0
+
 	self.special_bobbel_spawned = 0
 	self.special_bobbel_hit = 0
 	self.special_available = false
@@ -34,10 +52,8 @@ function game:init()
 	self.special_time_activated = 0
 	self.total_time = 0
 
-	self.drawing = Drawing.create()
 	self.score = Scoreboard.create()
 	self.spawner = Spawner.create(self.time_between_bobbels)
-	self.synth = Synth.create()
 
 	self.bobbels = {}
 	self.controller = {}
@@ -50,17 +66,6 @@ function game:init()
 	self.controller[1].keys = { d = true, l = true, right = true }
 	self.controller[2].keys = { s = true, k = true, down = true }
 	self.controller[3].keys = { a = true, j = true, left = true }
-
-	self.keys_activate_special = { rshift = true, lshift = true }
-	self.keys_back = { ' ', 'rctrl' }
-	self.keys_forward = { 'w', 'i', 'up' }
-
-	-- drawing settings
-	self.drawing:init()
-end
-
-function game:enter(game_menu)
-	self.menu = game_menu
 end
 
 function game:draw()
@@ -71,7 +76,7 @@ function game:draw()
 		self.drawing:controller(self.controller)
 		self.drawing:origin()
 
-		self.drawing:scoreboard(self.score:get_score(), self.score:get_multiplier(), self.score:get_spree(), self.score:get_max_spree(), self.total_time)
+		self.drawing:scoreboard(self:get_score())
 		self.drawing:muted(self.synth:is_muted())
 		self.drawing:special_available(self.special_available)
 		self.drawing:debug(self)
@@ -153,7 +158,6 @@ function game:spawn_special(bbl)
 	end
 	return bbl
 end
-
 
 function game:terminate_bobbel()
 	local old_bobbels = self:get_by_angle(self.bobbels, math.rad(360), math.rad(360))
@@ -295,7 +299,7 @@ end
 
 function game:lost()
 	if not self.debug then
-		print('lost the game')
+		Gamestate.switch(self.scorescreen, self.menu, self:get_score())
 	end
 end
 
@@ -311,6 +315,10 @@ function game:deactivate_special()
 		self.special_activated = false
 		self.score:set_special_activated(false)
 	end
+end
+
+function game:get_score()
+	return self.score:get_score(), self.score:get_multiplier(), self.score:get_spree(), self.score:get_max_spree(), self.total_time
 end
 
 function game:debugging_change_values(dt)
