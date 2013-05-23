@@ -18,7 +18,7 @@ function Drawing.create()
 	drawing.color_origin = { r = 0, g = 0, b = 0 }
 	drawing.color_bobbel = color1
 	drawing.color_bobbel_special_activated = color5
-	drawing.color_special_bobbel = color1
+	drawing.color_special_bobbel = color5
 	drawing.color_controller = color3
 	drawing.color_controller_pressed_hit = color5
 	drawing.color_controller_pressed_fail = color2
