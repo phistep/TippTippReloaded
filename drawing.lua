@@ -31,6 +31,7 @@ function Drawing.create()
 	drawing.color_bobbel_inside_canvas = { r = 255, g = 255, b = 255 }
 	drawing.color_special_bobbel_inside_canvas = { r = 255, g = 255, b = 255 }
 	drawing.color_controller_inside_canvas = { r = 255, g = 255, b = 255 }
+	drawing.color_description = { r = 45, g = 45, b = 45 }
 
 	drawing.bobbel_line_width = 3
 	drawing.special_bobbel_line_width = 3
@@ -55,7 +56,7 @@ function Drawing.create()
 	drawing.font_score = love.graphics.newFont("assets/polentical_neon_bold.ttf", 50)
 	drawing.font_spree = love.graphics.newFont("assets/polentical_neon_bold.ttf", 30)
 	drawing.font_time = love.graphics.newFont("assets/polentical_neon_bold.ttf", 30)
-	drawing.font_mute = love.graphics.newFont("assets/polentical_neon_bold_italic.ttf", 14)
+	drawing.font_description = love.graphics.newFont("assets/polentical_neon_bold.ttf", 20)
 	drawing.font_special_available = love.graphics.newFont("assets/polentical_neon_bold_italic.ttf", 14)
 	drawing.font_pause = love.graphics.newFont("assets/polentical_neon_bold_italic.ttf", 80)
 
@@ -199,16 +200,24 @@ function Drawing:scoreboard(score, multiplier, spree, max_spree, time)
 	local x = 10
 	local y = 10
 
+	local inner_circle_radius = self.gamefield_radius - 2*self.track_distance
+	local score_margin = 10
+
+	love.graphics.setColor(self.color_description.r, self.color_description.g, self.color_description.b)
+	love.graphics.setFont(self.font_description)
+	love.graphics.printf("multiplier", love.graphics.getWidth()/2 - inner_circle_radius, love.graphics.getHeight()/2 - 60, 2*inner_circle_radius, "center")
+	love.graphics.printf("spree", score_margin + 40, love.graphics.getHeight()/2 - self.gamefield_radius - 20, 260, "right")
+	love.graphics.printf("score", score_margin, 5, love.graphics.getWidth() - 2*score_margin, "center")
+	love.graphics.printf("time", 490, love.graphics.getHeight()/2 - self.gamefield_radius - 20, 260, "left")
+
+
 	love.graphics.setColor(self.color_scoreboard.r, self.color_scoreboard.g, self.color_scoreboard.b)
-	--love.graphics.print("Best Spree: " .. tostring(max_spree), x, y+60)
 
 	-- multiplier
-	local inner_circle_radius = self.gamefield_radius - 2*self.track_distance
 	love.graphics.setFont(self.font_multi)
 	love.graphics.printf(multiplier.."x", love.graphics.getWidth()/2 - inner_circle_radius, love.graphics.getHeight()/2 - 60, 2*inner_circle_radius, "center")
 
 	-- score
-	local score_margin = 10
 	love.graphics.setFont(self.font_score)
 	love.graphics.printf(score, score_margin, 20, love.graphics.getWidth() - 2*score_margin, "center")
 
