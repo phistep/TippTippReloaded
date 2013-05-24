@@ -9,14 +9,18 @@ function scorescreen:init()
 	self.color_scoreboard = { r = 20, g = 128, b = 201}
 end
 
-function scorescreen:enter(previous, menu, score, multiplier, spree, max_spree, time)
+function scorescreen:enter(previous, menu, hits, fails, score, multiplier, spree, max_spree, time)
 	self.game = previous
 	self.menu = menu
+	self.hits = hits
+	self.fails = fails
 	self.score = score
 	self.multiplier = multiplier
 	self.spree = spree
 	self.max_spree = max_spree
 	self.time = time
+
+	self.accuracy = math.floor((self.hits / (self.hits + self.fails)) * 10000 + 0.5) / 100 -- round the percentage to 2 digits
 end
 
 function scorescreen:draw()
@@ -25,7 +29,7 @@ function scorescreen:draw()
 	love.graphics.printf("score:", 10, 20, love.graphics.getWidth() - 20, "center")
 	love.graphics.printf("time played:", 10, 120, love.graphics.getWidth() - 20, "center")
 	love.graphics.printf("best spree:", 10, 220, love.graphics.getWidth() - 20, "center")
---	love.graphics.printf("hit accuracy:", 10, 320, love.graphics.getWidth() - 20, "center")
+	love.graphics.printf("hit accuracy:", 10, 320, love.graphics.getWidth() - 20, "center")
 
 	love.graphics.setColor(self.color_scoreboard.r, self.color_scoreboard.g, self.color_scoreboard.b)
 	love.graphics.setFont(self.font_score)
@@ -34,7 +38,7 @@ function scorescreen:draw()
 	local timestring = string.format("%02d:%02d", self.time / 60, self.time % 60)
 	love.graphics.printf(timestring, 10, 140, love.graphics.getWidth() - 20, "center")
 	love.graphics.printf(self.max_spree, 10, 240, love.graphics.getWidth() - 20, "center")
---	love.graphics.printf(self.accuracy.."%", 10, 340, love.graphics.getWidth() - 20, "center")
+	love.graphics.printf(self.accuracy.."%", 10, 340, love.graphics.getWidth() - 20, "center")
 
 end
 

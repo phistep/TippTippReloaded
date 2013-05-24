@@ -50,6 +50,9 @@ function game:enter(game_menu)
 	self.special_available = false
 	self.special_activated = false
 	self.special_time_activated = 0
+
+	self.total_hits = 0
+	self.total_fails = 0
 	self.total_time = 0
 
 	self.score = Scoreboard.create()
@@ -277,6 +280,7 @@ function game:hit(hit_bbl)
 		self.score:count_hit(self, hbbl)
 		self:remove_by_values(hbbl.angle, hbbl.track)
 		self.synth:play(hbbl.track)
+		self.total_hits = self.total_hits + 1
 	end
 	self:set_controller_velocity(self.controller_velocity + self.hit_acceleration)
 end
@@ -293,13 +297,16 @@ function game:fail(fail_bbl)
 	if not (fail_bbl and not fail_bbl.special) then
 		self.special_bobbel_hit = 0
 	end
+	if fail_bbl then
+		self.total_fails = self.total_fails + 1
+	end
 	self.score:count_miss()
 	self:set_controller_velocity(self.controller_velocity + self.fail_acceleration)
 end
 
 function game:lost()
 	if not self.debug then
-		Gamestate.switch(self.scorescreen, self.menu, self:get_score())
+		Gamestate.switch(self.scorescreen, self.menu, self.total_hits, self.total_fails, self:get_score())
 	end
 end
 
