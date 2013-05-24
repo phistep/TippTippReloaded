@@ -29,9 +29,13 @@ function game:init()
 	self.spawner = nil
 	self.synth = Synth.create()
 
-	self.keys_activate_special = { rshift = true, lshift = true }
+	self.keys_activate_special = { ['rshift'] = true, ['lshift'] = true }
 	self.keys_back = { ' ', 'rctrl' }
 	self.keys_forward = { 'w', 'i', 'up' }
+	self.keys_menu = { ['q'] = true }
+	self.keys_pause = { ['escape'] = true }
+	self.keys_mute = { ['m'] = true }
+	self.keys_debugging = { ['b'] = true }
 
 	-- drawing settings
 	self.drawing:init()
@@ -208,16 +212,16 @@ function game:keypressed(key)
 	if self.keys_activate_special[key] and self.special_available then
 		self:activate_special()
 	end
-	if key == "escape" then
+	if self.keys_menu[key] then
 		Gamestate.switch(self.menu)
 	end
-	if key == "m" then
-		self.synth:toggle_mute()
-	end
-	if key == "n" then
+	if self.keys_pause[key] then
 		self.pause = not self.pause
 	end
-	if key == "b" then
+	if self.keys_mute[key] then
+		self.synth:toggle_mute()
+	end
+	if self.keys_debugging[key] then
 		self.debug = not self.debug
 	end
 end

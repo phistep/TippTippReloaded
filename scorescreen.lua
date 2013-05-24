@@ -7,6 +7,9 @@ function scorescreen:init()
 
 	self.color_description = { r = 45, g = 45, b = 45}
 	self.color_scoreboard = { r = 20, g = 128, b = 201}
+
+	self.keys_quit = { ['escape'] = true, ['q'] = true }
+	self.keys_no_reaction = { ['a'] = true, ['s'] = true, ['d'] = true, ['j'] = true, ['k'] = true, ['l'] = true, ['left'] = true, ['down'] = true, ['right'] = true }
 end
 
 function scorescreen:enter(previous, menu, hits, fails, score, multiplier, spree, max_spree, time)
@@ -43,9 +46,9 @@ function scorescreen:draw()
 end
 
 function scorescreen:keypressed(key)
-	if key == "escape" then
+	if self.keys_quit[key] then
 		love.event.push('quit')
-	else
+	elseif not self.keys_no_reaction[key] then
 		Gamestate.switch(self.menu)
 	end
 end

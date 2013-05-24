@@ -10,6 +10,8 @@ function menu:init()
 	self.body_font = love.graphics.newFont("assets/polentical_neon_bold.ttf", 16)
 	self.credits_font = love.graphics.newFont(8)
 
+	self.keys_quit = { ['escape'] = true, ['q'] = true }
+
 	local xgame = love.graphics.getWidth()
 	local ygame = love.graphics.getHeight() / 2
 	local startgame = math.rad(0)
@@ -60,7 +62,7 @@ function menu:update(dt)
 end
 
 function menu:keypressed(key)
-	if key == "escape" then
+	if self.keys_quit[key] then
 		love.event.push('quit')
 	else
 		Gamestate.switch(self.game)
