@@ -20,6 +20,7 @@ function scorescreen:enter(previous, menu, hits, fails, score, multiplier, spree
 	self.max_spree = max_spree
 	self.time = time
 
+	self.timestring = string.format("%02d:%02d", self.time / 60, self.time % 60)
 	self.accuracy = math.floor((self.hits / (self.hits + self.fails)) * 10000 + 0.5) / 100 -- round the percentage to 2 digits
 end
 
@@ -35,8 +36,7 @@ function scorescreen:draw()
 	love.graphics.setFont(self.font_score)
 	love.graphics.printf(self.score, 10, 40, love.graphics.getWidth() - 20, "center")
 	love.graphics.setFont(self.font_other)
-	local timestring = string.format("%02d:%02d", self.time / 60, self.time % 60)
-	love.graphics.printf(timestring, 10, 140, love.graphics.getWidth() - 20, "center")
+	love.graphics.printf(self.timestring, 10, 140, love.graphics.getWidth() - 20, "center")
 	love.graphics.printf(self.max_spree, 10, 240, love.graphics.getWidth() - 20, "center")
 	love.graphics.printf(self.accuracy.."%", 10, 340, love.graphics.getWidth() - 20, "center")
 
