@@ -44,10 +44,12 @@ if($_SERVER['REQUEST_METHOD'] == "GET"){
 		echo "\t\t\t\t\t<td>".htmlspecialchars($score['score'])."</td>\n";
 		echo "\t\t\t\t\t<td>".htmlspecialchars($score['name'])."</td>\n\t\t\t\t</tr>\n";
 	}
-}
 ?>
 			</tbody>
 		</table>
 	</body>
 </html>
+<?php
+}
+?>
 
