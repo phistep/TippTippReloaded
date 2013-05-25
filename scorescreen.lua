@@ -1,4 +1,5 @@
 local scorescreen = {}
+local http = require("socket.http")
 
 function scorescreen:init()
 	self.font_description = love.graphics.newFont("assets/polentical_neon_bold.ttf", 20)
@@ -10,6 +11,12 @@ function scorescreen:init()
 
 	self.keys_quit = { ['escape'] = true, ['q'] = true }
 	self.keys_no_reaction = { ['a'] = true, ['s'] = true, ['d'] = true, ['j'] = true, ['k'] = true, ['l'] = true, ['left'] = true, ['down'] = true, ['right'] = true }
+	self.keys_submit_score = { ['return'] = true}
+
+	self.submit_url = "http://ps0ke.de/misc/lua-nick-server/"
+	self.max_name_length = 12
+	self.blink_time = 0.75
+	self.cursor = "_"
 end
 
 function scorescreen:enter(previous, menu, hits, fails, score, multiplier, spree, max_spree, time)
@@ -25,6 +32,16 @@ function scorescreen:enter(previous, menu, hits, fails, score, multiplier, spree
 
 	self.timestring = string.format("%02d:%02d", self.time / 60, self.time % 60)
 	self.accuracy = math.floor((self.hits / (self.hits + self.fails)) * 10000 + 0.5) / 100 -- round the percentage to 2 digits
+
+	self.name = ""
+	self.insert_mode = false
+	self.saved = false
+	self.total_blink_time = 0
+	self.cursor_state = ""
+end
+
+function scorescreen:update(dt)
+	self.total_blink_time = self.total_blink_time + dt
 end
 
 function scorescreen:draw()
@@ -35,6 +52,16 @@ function scorescreen:draw()
 	love.graphics.printf("best spree:", 10, 220, love.graphics.getWidth() - 20, "center")
 	love.graphics.printf("hit accuracy:", 10, 320, love.graphics.getWidth() - 20, "center")
 
+	if self.insert_mode or self.saved then
+		love.graphics.printf("name:", 10, 420, love.graphics.getWidth() - 20, "center")
+	else
+		love.graphics.printf("[Return] to submit online", 10, 420, love.graphics.getWidth() - 20, "center")
+	end
+
+	if self.saved then
+		love.graphics.printf("saved!", 10, 475, love.graphics.getWidth() - 20, "center")
+	end
+
 	love.graphics.setColor(self.color_scoreboard.r, self.color_scoreboard.g, self.color_scoreboard.b)
 	love.graphics.setFont(self.font_score)
 	love.graphics.printf(self.score, 10, 40, love.graphics.getWidth() - 20, "center")
@@ -43,13 +70,52 @@ function scorescreen:draw()
 	love.graphics.printf(self.max_spree, 10, 240, love.graphics.getWidth() - 20, "center")
 	love.graphics.printf(self.accuracy.."%", 10, 340, love.graphics.getWidth() - 20, "center")
 
+	if self.total_blink_time >= self.blink_time then
+		self.total_blink_time = 0
+		if self.cursor_state == "" and self.name:len() < self.max_name_length and self.insert_mode then
+			self.cursor_state = self.cursor
+		else
+			self.cursor_state = ""
+		end
+	end
+	love.graphics.printf(self.name..self.cursor_state, 10, 440, love.graphics.getWidth() - 20, "center")
 end
 
 function scorescreen:keypressed(key)
-	if self.keys_quit[key] then
-		love.event.push('quit')
-	elseif not self.keys_no_reaction[key] then
-		Gamestate.switch(self.menu)
+	if self.insert_mode then
+		-- if key is word character, add to string
+		if key and key:len() == 1 and key:match('[%w]') and self.name:len() < self.max_name_length then
+			self.name = self.name..key
+		end
+
+		-- delete last character in string
+		if key == "backspace" then
+			self.name = string.sub(self.name, 1, self.name:len()-1)
+		end
+
+		-- submit name + score to server on return
+		if key == "return" and self.name:len() > 0 then
+			response, code, header = http.request(
+				self.submit_url,
+				"name="..self.name.."&score="..tostring(self.score)
+			)
+			if code == 200 then
+				self.insert_mode = false
+				self.saved = true
+			end
+		end
+
+		if key == "escape" then
+			self.insert_mode = false
+		end
+	else
+		if self.keys_quit[key] then
+			love.event.push('quit')
+		elseif not self.saved and self.keys_submit_score[key] then
+			self.insert_mode = true
+		elseif not self.keys_no_reaction[key] then
+			Gamestate.switch(self.menu)
+		end
 	end
 end
 

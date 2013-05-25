@@ -2,7 +2,7 @@
 BUILD_DIR="`pwd`/build/"
 TMP_DIR="${BUILD_DIR}tmp/"
 SRC_DIR="${BUILD_DIR}src/"
-REMOVE_FILES=('.git' '.gitignore' '.DS_Store' 'README.md' 'build.sh')
+REMOVE_FILES=('.git' '.gitignore' '.DS_Store' 'README.md' 'build.sh' 'web')
 LOVE_VERSION="0.8.0"
 NAME=${PWD##*/}
 
