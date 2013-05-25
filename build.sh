@@ -37,10 +37,10 @@ linux_build(){
 	cd $TMP_DIR
 	wget https://bitbucket.org/rude/love/downloads/love-$LOVE_VERSION-linux-src.tar.gz
 	tar -xvf love-$LOVE_VERSION-linux-src.tar.gz
-	cd love-$LOVE_VERSION-linux-src
+	cd love-$LOVE_VERSION
 	./configure
 	make
-	cat ./love ${BUILD_DIR}${NAME}.love > ${BUILD_DIR}${NAME}_linux
+	cat ./src/love ${BUILD_DIR}${NAME}.love > ${BUILD_DIR}${NAME}_linux
 	chmod +x ${BUILD_DIR}${NAME}_linux
 }
 
@@ -64,7 +64,7 @@ osx_build(){
 
 win_build x86
 win_build x64
-# linux_build
+linux_build
 osx_build
 
 rm -rf $TMP_DIR $SRC_DIR
