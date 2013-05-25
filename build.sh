@@ -1,16 +1,25 @@
+#!/usr/bin/env bash
 BUILD_DIR="`pwd`/build/"
 TMP_DIR="${BUILD_DIR}tmp/"
+SRC_DIR="${BUILD_DIR}/src/"
+REMOVE_FILES=('.git' '.gitignore' '.DS_Store' 'README.md' 'build.sh')
 LOVE_VERSION="0.8.0"
 NAME=${PWD##*/}
 
-rm -rf $TMP_DIR $BUILD_DIR
+rm -rf $TMP_DIR $BUILD_DIR $SRC_DIR
 
-zip -r ../build.love *
+cp -r . ../${NAME}_copy
 
 mkdir $BUILD_DIR
 mkdir $TMP_DIR
 
-mv ../build.love ${BUILD_DIR}${NAME}.love
+mv ../${NAME}_copy $SRC_DIR
+
+for ((i=0; i<${#REMOVE_FILES[@]}; i++)); do
+	rm -rf ${SRC_DIR}${REMOVE_FILES[$i]}
+done
+
+zip -r ${BUILD_DIR}${NAME}.love $SRC_DIR
 
 win_build(){
 	cd $TMP_DIR
@@ -57,4 +66,4 @@ win_build x64
 # linux_build
 osx_build
 
-rm -rf $TMP_DIR
+rm -rf $TMP_DIR $SRC_DIR
