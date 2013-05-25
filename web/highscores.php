@@ -1,7 +1,7 @@
 <?php
 $db = new mysqli('localhost', 'user', 'password', 'database');
 /*
-REATE TABLE `scores` (
+CREATE TABLE `scores` (
 	`id`	int(11) NOT NULL AUTO_INCREMENT,
 	`date`	datetime NOT NULL,
 	`nick`	varchar(12) COLLATE utf8_unicode_ci NOT NULL,
