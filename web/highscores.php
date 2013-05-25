@@ -40,7 +40,7 @@ if($_SERVER['REQUEST_METHOD'] == "GET"){
 			</thead>
 			<tbody>
 <?php
-	$highscores = $db->query("SELECT * FROM `scores` ORDER BY `score` DESC LIMIT 10");
+	$highscores = $db->query("SELECT s.nick, MAX(score) as score, (SELECT s2.date as date FROM scores s2 WHERE s.nick = s2.nick ORDER by s2.score DESC LIMIT 1) as date FROM scores s GROUP BY s.nick ORDER by score DESC LIMIT 10");
 	while($score = $highscores->fetch_assoc()){
 		echo "\t\t\t\t<tr>\n\t\t\t\t\t<td>".htmlspecialchars($score['date'])."</td>\n";
 		echo "\t\t\t\t\t<td>".htmlspecialchars($score['score'])."</td>\n";
