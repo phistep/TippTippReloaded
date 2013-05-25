@@ -23,7 +23,7 @@ if($_SERVER['REQUEST_METHOD'] == "GET"){
 <!doctype html>
 <html>
 	<head>
-		<title>omilia stats</title>
+		<title>TippTippReloaded Highscores</title>
 		<meta charset="utf-8">
 	</head>
 	<body>
