@@ -78,7 +78,10 @@ function scorescreen:draw()
 	love.graphics.printf(self.timestring, 10, 140, love.graphics.getWidth() - 20, "center")
 	love.graphics.printf(self.max_spree, 10, 240, love.graphics.getWidth() - 20, "center")
 	love.graphics.printf(self.accuracy.."%", 10, 340, love.graphics.getWidth() - 20, "center")
-	love.graphics.printf(self.name..self.cursor_state, 10, 440, love.graphics.getWidth() - 20, "center")
+
+	if self.insert_mode then
+		love.graphics.printf(self.name..self.cursor_state, 10, 440, love.graphics.getWidth() - 20, "center")
+	end
 end
 
 function scorescreen:keypressed(key)
