@@ -12,9 +12,11 @@ CREATE TABLE `scores` (
 
 if($_SERVER['REQUEST_METHOD'] == "POST"){
 	if($qry = $db->prepare("INSERT INTO `scores` (date, name, score) VALUES (NOW(), ?, ?)")){
-		$qry->bind_param("ss", $_POST['name'], $_POST['score']);
-		$qry->execute();
-		$qry->close();				
+		if(isset($_POST['name']) && isset($_POST['score'])) {
+			$qry->bind_param("ss", $_POST['name'], $_POST['score']);
+			$qry->execute();
+			$qry->close();				
+		}
 	}
 }
 
