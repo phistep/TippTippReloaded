@@ -7,7 +7,7 @@ require 'spawner'
 local game = {}
 
 function game:init()
-	self.debug = true
+	self.debug = false
 	self.scorescreen = require 'scorescreen'
 
 	self.hit_offset = math.rad(5)
