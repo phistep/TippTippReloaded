@@ -4,7 +4,7 @@ $db = new mysqli('localhost', 'user', 'password', 'database');
 CREATE TABLE `scores` (
 	`id`	int(11) NOT NULL AUTO_INCREMENT,
 	`date`	datetime NOT NULL,
-	`nick`	varchar(12) COLLATE utf8_unicode_ci NOT NULL,
+	`name`	varchar(12) COLLATE utf8_unicode_ci NOT NULL,
 	`score`	int(11) NOT NULL,
 	PRIMARY KEY (`id`)
 )
@@ -40,7 +40,7 @@ if($_SERVER['REQUEST_METHOD'] == "GET"){
 			</thead>
 			<tbody>
 <?php
-	$highscores = $db->query("SELECT s.nick, MAX(score) as score, (SELECT s2.date as date FROM scores s2 WHERE s.nick = s2.nick ORDER by s2.score DESC LIMIT 1) as date FROM scores s GROUP BY s.nick ORDER by score DESC LIMIT 10");
+	$highscores = $db->query("SELECT s.name, MAX(score) as score, (SELECT s2.date as date FROM scores s2 WHERE s.name = s2.name ORDER by s2.score DESC LIMIT 1) as date FROM scores s GROUP BY s.name ORDER by score DESC LIMIT 10");
 	while($score = $highscores->fetch_assoc()){
 		echo "\t\t\t\t<tr>\n\t\t\t\t\t<td>".htmlspecialchars($score['date'])."</td>\n";
 		echo "\t\t\t\t\t<td>".htmlspecialchars($score['score'])."</td>\n";
