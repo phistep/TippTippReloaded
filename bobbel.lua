@@ -38,6 +38,7 @@ function Bobbel:draw(state, bobbel_canvas, spawner_postion)
 	love.graphics.setColor(r, g, b, a)
 end
 
-function Bobbel:update(state, dt)
-	self.angle = self.angle + state.angular_velocity * dt
+function Bobbel:update(state, dt, controller_velocity)
+	controller_velocity = controller_velocity or 0
+	self.angle = self.angle + (state.angular_velocity - controller_velocity) * dt
 end

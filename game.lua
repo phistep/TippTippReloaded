@@ -105,7 +105,7 @@ function game:update(dt)
 
 		-- Updating bobbels
 		for _, bbl in pairs(self.bobbels) do
-			bbl:update(self, dt)
+			bbl:update(self, dt, self.controller_velocity)
 		end
 
 		-- Spawning new bobbels
