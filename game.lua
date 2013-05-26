@@ -11,6 +11,7 @@ function game:init()
 	self.scorescreen = require 'scorescreen'
 
 	self.hit_offset = math.rad(5)
+	self.controller_spawner_distance = math.rad(180)
 	self.angular_velocity_modifier = 0.003
 	self.time_between_bobbels_modifier = 0.003
 
@@ -79,9 +80,9 @@ function game:draw()
 	self.drawing:let_glow(function()
 		self.drawing:gamefield()
 
-		self.drawing:bobbels(self.bobbels, self.special_activated)
+		self.drawing:bobbels(self.bobbels, self.special_activated, self:get_spawner_position())
 		self.drawing:controller(self.controller)
-		self.drawing:origin()
+		self.drawing:origin(self:get_spawner_position())
 
 		self.drawing:scoreboard(self:get_score())
 		self.drawing:muted(self.synth:is_muted())
@@ -144,7 +145,7 @@ function game:spawn_bobbel(dt)
 	if new_tracks then
 		for trackno, tdiff in pairs(new_tracks) do
 			if trackno >= 0 and trackno <= 2 then
-				local new_bobbel = Bobbel.create(tdiff * self.angular_velocity, trackno)
+				local new_bobbel = Bobbel.create(self:get_spawner_position() + tdiff * self.angular_velocity, trackno)
 				new_bobbel = self:spawn_special(new_bobbel)
 				table.insert(self.bobbels, new_bobbel)
 			end
@@ -253,6 +254,10 @@ function game:get_by_angle(bobbels, angle, range)
 		end
 	end
 	return ret_bbls
+end
+
+function game:get_spawner_position()
+	return self.controller[1].angle - self.controller_spawner_distance
 end
 
 function game:change_controller_angle(delta_angle)

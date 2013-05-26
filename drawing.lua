@@ -155,7 +155,7 @@ function Drawing:gamefield()
 	end
 end
 
-function Drawing:bobbels(bobbels, special_activated)
+function Drawing:bobbels(bobbels, special_activated, spawner_position)
 	local bobbel_color = self.color_bobbel
 	if special_activated then
 		bobbel_color = self.color_bobbel_special_activated
@@ -168,7 +168,7 @@ function Drawing:bobbels(bobbels, special_activated)
 			bbl:draw(self, self.special_bobbel_canvas)
 			love.graphics.setColor(bobbel_color.r, bobbel_color.g, bobbel_color.b)
 		else
-			bbl:draw(self)
+			bbl:draw(self, self.bobbel_canvas, spawner_position)
 		end
 	end
 end
@@ -186,12 +186,16 @@ function Drawing:controller(controller)
 	end
 end
 
-function Drawing:origin()
+function Drawing:origin(start, stop)
+	start = start or math.rad(0)
+	stop = stop or math.rad(360)
+	stop = stop - math.rad(360)
+
 	local limit = 20
 	for i = limit, 0, -0.5 do
 		alpha = 40 * math.pow((limit - i) / limit, 0.5)
 		love.graphics.setColor(self.color_origin.r, self.color_origin.g, self.color_origin.b, alpha)
-		love.graphics.arc("fill", self.center.x, self.center.y, self.gamefield_radius*1.25 + i, math.rad(90-i), math.rad(90+i), 100)
+		love.graphics.arc("fill", self.center.x, self.center.y, self.gamefield_radius*1.25 + i, stop + math.rad(90-i), start + math.rad(90+i), 100)
 	end
 end
 

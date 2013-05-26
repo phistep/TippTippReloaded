@@ -10,19 +10,20 @@ function Bobbel.create(angle, track, consistent)
 	return bbl
 end
 
-function Bobbel:draw(state, bobbel_canvas)
+function Bobbel:draw(state, bobbel_canvas, spawner_postion)
 	bobbel_canvas = bobbel_canvas or state.bobbel_canvas
+	spawner_postion = spawner_postion or 0
 	local r, g, b, a = love.graphics.getColor()
 
 	if not self.consistent then
 		local angle = self.angle
 		local limit = math.rad(15)
 
-		if angle >= 2*math.pi - limit then
+		if angle >= math.rad(360) - limit then
 			angle = math.abs(math.rad(360) - angle)
 		end
-		if angle <= limit then
-			local alpha = a * math.pow(angle / limit, 2)
+		if angle - spawner_postion <= limit then
+			local alpha = a * math.pow((angle - spawner_postion) / limit, 2)
 			love.graphics.setColor(r, g, b, alpha)
 		end
 	end
