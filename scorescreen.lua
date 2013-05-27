@@ -59,6 +59,8 @@ function scorescreen:update(dt)
 end
 
 function scorescreen:draw()
+	Effects:start_glow()
+
 	love.graphics.setFont(self.font_description)
 	love.graphics.setColor(self.color_description.r, self.color_description.g, self.color_description.b)
 	love.graphics.printf("score:", 10, 20, love.graphics.getWidth() - 20, "center")
@@ -87,6 +89,8 @@ function scorescreen:draw()
 	if self.insert_mode or self.saved then
 		love.graphics.printf(self.name..self.cursor_state, 10, 440, love.graphics.getWidth() - 20, "center")
 	end
+
+	Effects:stop_glow()
 end
 
 function scorescreen:keypressed(key)

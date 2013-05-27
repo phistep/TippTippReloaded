@@ -21,6 +21,7 @@ function menu:init()
 end
 
 function menu:draw()
+	Effects:start_glow()
 	self.menugame:draw()
 
 	love.graphics.setColor(255, 255, 255)
@@ -54,7 +55,7 @@ Press [Esc] to quit the game
 
 	love.graphics.setFont(self.credits_font)
 	love.graphics.print("Font: 'Polentical Neon' by Jayvee D. Enaguas (Grand Chaos), CC-BY-SA", 5, love.graphics.getHeight()-10)
-
+	Effects:stop_glow()
 end
 
 function menu:update(dt)

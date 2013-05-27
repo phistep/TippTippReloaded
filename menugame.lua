@@ -47,10 +47,8 @@ function Menugame.create(x, y, r, start, stop)
 end
 
 function Menugame:draw()
-	Effects:start_glow()
 	self:gamefield()
 	self:draw_bobbels(self.bobbels)
-	Effects:stop_glow()
 end
 
 function Menugame:update(dt)
