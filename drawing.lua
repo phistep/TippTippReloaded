@@ -158,13 +158,13 @@ function Drawing:rotate_gamefield(angle, content)
 	self.rotate_canvas:clear()
 
 	love.graphics.setCanvas(self.rotate_canvas)
-	love.graphics.setBlendMode('premultiplied')
 	content()
 
-	love.graphics.setBlendMode(bmode)
 	love.graphics.setCanvas(old_canvas)
 	love.graphics.setColor(255, 255, 255)
+	love.graphics.setBlendMode('premultiplied')
 	love.graphics.draw(self.rotate_canvas, love.graphics.getWidth()/2, love.graphics.getHeight()/2, angle, 1, 1, love.graphics.getWidth()/2, love.graphics.getHeight()/2)
+	love.graphics.setBlendMode(bmode)
 end
 
 function Drawing:gamefield()
@@ -213,12 +213,16 @@ function Drawing:origin(start, stop)
 	stop = stop or math.rad(360)
 	stop = stop - math.rad(360)
 
+	local bmode = love.graphics.getBlendMode()
+	love.graphics.setBlendMode('premultiplied')
+
 	local limit = 20
 	for i = limit, 0, -0.5 do
 		alpha = 40 * math.pow((limit - i) / limit, 0.5)
 		love.graphics.setColor(self.color_origin.r, self.color_origin.g, self.color_origin.b, alpha)
 		love.graphics.arc("fill", self.center.x, self.center.y, self.gamefield_radius*1.25 + i, stop + math.rad(90-i), start + math.rad(90+i), 100)
 	end
+	love.graphics.setBlendMode(bmode)
 end
 
 function Drawing:scoreboard(score, multiplier, spree, max_spree, time)
