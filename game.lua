@@ -76,22 +76,22 @@ function game:enter(game_menu)
 end
 
 function game:draw()
-	self.drawing:let_glow(function()
-		self.drawing:gamefield()
+	Effects:start_glow()
+	self.drawing:gamefield()
 
-		self.drawing:bobbels(self.bobbels, self.special_activated)
-		self.drawing:controller(self.controller)
-		self.drawing:origin()
+	self.drawing:bobbels(self.bobbels, self.special_activated)
+	self.drawing:controller(self.controller)
+	self.drawing:origin()
 
-		self.drawing:scoreboard(self:get_score())
-		self.drawing:muted(self.synth:is_muted())
-		self.drawing:special_available(self.special_available)
-		self.drawing:debug(self)
+	self.drawing:scoreboard(self:get_score())
+	self.drawing:muted(self.synth:is_muted())
+	self.drawing:special_available(self.special_available)
+	self.drawing:debug(self)
 
-		if self.pause then
-			self.drawing:pause()
-		end
-	end)
+	if self.pause then
+		self.drawing:pause()
+	end
+	Effects:stop_glow()
 end
 
 function game:update(dt)

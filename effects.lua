@@ -1,6 +1,13 @@
 Effects = {}
 Effects.__index = Effects
 
+Effects.glow = {}
+Effects.glow.glowing_canvas = love.graphics.newCanvas()
+Effects.glow.glowmap_canvas = love.graphics.newCanvas(0.5 * love.graphics.getWidth(), 0.5 * love.graphics.getHeight())
+
+Effects.glow.blur = love.graphics.newPixelEffect("blur.glsl")
+Effects.glow.bloom = love.graphics.newPixelEffect("bloom.glsl")
+
 function Effects:glowShape(type, style, linewidth, ...)
 	-- if type is 'line' the style is the linewidth
 	if type == 'line' then
@@ -102,6 +109,31 @@ function Effects:drawArc(x, y, r, angle1, angle2, segments)
 		love.graphics.line(x + (math.cos(i) * r), y - (math.sin(i) * r), x + (math.cos(j) * r), y - (math.sin(j) * r))
 		i = j
 	end
+end
+
+function Effects:start_glow()
+	self.glow.old_canvas = love.graphics.getCanvas()
+	self.glow.old_blend_mode = love.graphics.getBlendMode()
+
+	self.glow.glowing_canvas:clear()
+	love.graphics.setCanvas(self.glow.glowing_canvas)
+end
+
+function Effects:stop_glow()
+	love.graphics.setCanvas(self.glow.glowmap_canvas)
+	love.graphics.setPixelEffect(self.glow.blur)
+	love.graphics.setBlendMode('premultiplied')
+	self.glow.blur:send("blurMultiplyVec", {1.0, 0.0});
+	love.graphics.draw(self.glow.glowing_canvas, 0, 0, 0, 0.5, 0.5)
+	love.graphics.setBlendMode('alpha')
+	self.glow.blur:send("blurMultiplyVec", {0.0, 1.0});
+	love.graphics.draw(self.glow.glowmap_canvas)
+	love.graphics.setCanvas(self.glow.old_canvas)
+	love.graphics.setPixelEffect(self.glow.bloom)
+	self.glow.bloom:send("glowmap", self.glow.glowmap_canvas);
+	love.graphics.draw(self.glow.glowing_canvas)
+	love.graphics.setPixelEffect()
+	love.graphics.setBlendMode(self.glow.old_blend_mode)
 end
 
 return Effects

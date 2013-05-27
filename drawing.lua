@@ -42,11 +42,6 @@ function Drawing.create()
 	drawing.bobbel_canvas = nil
 	drawing.special_bobbel_canvas = nil
 	drawing.controller_canvas = nil
-	drawing.glowing_canvas = nil
-	drawing.glowmap_canvas = nil
-
-	drawing.blur = nil
-	drawing.bloom = nil
 
 	drawing.font_debug = love.graphics.newFont(12)
 	drawing.font_multi = love.graphics.newFont("assets/polentical_neon_bold.ttf", 100)
@@ -64,7 +59,6 @@ function Drawing:init()
 	self:create_bobbel_canvas()
 	self:create_special_bobbel_canvas()
 	self:create_controller_canvas()
-	self:load_shaders()
 
 	love.graphics.setCanvas()
 	love.graphics.setBackgroundColor(self.color_background.r, self.color_background.g, self.color_background.b)
@@ -109,37 +103,6 @@ function Drawing:create_controller_canvas()
 
 	love.graphics.setBlendMode('premultiplied')
 	Effects:glowShape('circle', 'fill', self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
-	love.graphics.setBlendMode(bmode)
-end
-
-function Drawing:load_shaders()
-	self.glowing_canvas = love.graphics.newCanvas()
-	self.glowmap_canvas = love.graphics.newCanvas(0.5 * love.graphics.getWidth(), 0.5 * love.graphics.getHeight())
-	self.blur = love.graphics.newPixelEffect("blur.glsl")
-	self.bloom = love.graphics.newPixelEffect("bloom.glsl")
-end
-
-function Drawing:let_glow(content)
-	local bmode = love.graphics.getBlendMode()
-
-	self.glowing_canvas:clear()
-	love.graphics.setCanvas(self.glowing_canvas)
-
-	content()
-
-	love.graphics.setCanvas(self.glowmap_canvas)
-	love.graphics.setPixelEffect(self.blur)
-	love.graphics.setBlendMode('premultiplied')
-	self.blur:send("blurMultiplyVec", {1.0, 0.0});
-	love.graphics.draw(self.glowing_canvas, 0, 0, 0, 0.5, 0.5)
-	love.graphics.setBlendMode('alpha')
-	self.blur:send("blurMultiplyVec", {0.0, 1.0});
-	love.graphics.draw(self.glowmap_canvas)
-	love.graphics.setCanvas()
-	love.graphics.setPixelEffect(self.bloom)
-	self.bloom:send("glowmap", self.glowmap_canvas);
-	love.graphics.draw(self.glowing_canvas)
-	love.graphics.setPixelEffect()
 	love.graphics.setBlendMode(bmode)
 end
 
