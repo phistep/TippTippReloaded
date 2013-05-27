@@ -181,7 +181,8 @@ function game:terminate_bobbel()
 end
 
 function game:update_rotation(dt)
-	self.rotation_angle = self.rotation_angle + dt * self:get_real_controller_velocity()
+	--self.rotation_angle = self.rotation_angle + dt * 2 * self:get_real_controller_velocity()
+	self.rotation_angle = self.rotation_angle + dt * 2 * self.controller_velocity
 end
 
 function game:update_controller(dt)
@@ -266,7 +267,7 @@ end
 function game:get_real_controller_velocity()
 	local movement_modifier = (self:get_controller_angle() - self:get_gamefield_start()) / self:get_gamefield_width()
 	if self.controller_velocity < 0 then
-		movement_modifier = 1 - movement_modifier + 0.5
+		movement_modifier = 1 - movement_modifier + 0.2
 	end
 	return self.controller_velocity * movement_modifier
 end
