@@ -7,7 +7,17 @@ function Synth.create()
 	local synth = {}
 	setmetatable(synth, Synth)
 
-	synth.mute = false
+	synth.mute_file = "mute.txt"
+	if not love.filesystem.exists(synth.mute_file) then
+		love.filesystem.write(synth.mute_file, "false")
+	end
+
+	if love.filesystem.read(synth.mute_file) == "true" then
+		synth.mute = true
+	else
+		synth.mute = false
+	end
+
 	synth.sources = {
 		synth:createSource("c"),
 		synth:createSource("e"),
@@ -43,5 +53,6 @@ end
 
 function Synth:toggle_mute(new_mute)
 	self.mute = new_mute or not self.mute
+	love.filesystem.write(self.mute_file, tostring(self.mute))
 end
 

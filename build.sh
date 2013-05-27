@@ -20,6 +20,7 @@ for ((i=0; i<${#REMOVE_FILES[@]}; i++)); do
 done
 
 cd $SRC_DIR
+sed -i '' 's/t\.release = false/t.release = true/' conf.lua
 zip -r ${BUILD_DIR}${NAME}.love *
 
 win_build(){

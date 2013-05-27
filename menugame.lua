@@ -1,5 +1,4 @@
 require 'bobbel'
-require 'glowshapes'
 
 Menugame = {}
 Menugame.__index = Menugame
@@ -48,10 +47,8 @@ function Menugame.create(x, y, r, start, stop)
 end
 
 function Menugame:draw()
-	self:let_glow(function()
-		self:gamefield()
-		self:draw_bobbels(self.bobbels)
-	end)
+	self:gamefield()
+	self:draw_bobbels(self.bobbels)
 end
 
 function Menugame:update(dt)
@@ -124,7 +121,7 @@ function Menugame:create_bobbel_canvas()
 	love.graphics.setLineWidth(self.bobbel_line_width)
 
 	love.graphics.setBlendMode('premultiplied')
-	glowShape('circle', 'line', self.bobbel_line_width, self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
+	Effects:glowShape('circle', 'line', self.bobbel_line_width, self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
 	love.graphics.setBlendMode(bmode)
 end
 
@@ -164,7 +161,7 @@ function Menugame:gamefield()
 	love.graphics.setLineWidth(self.gamefield_line_width)
 
 	for i = 0, 2 do
-		drawArc(
+		Effects:drawArc(
 			self.center.x,
 			self.center.y,
 			self.gamefield_radius - i * self.track_distance,

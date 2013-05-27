@@ -13,10 +13,15 @@ function scorescreen:init()
 	self.keys_no_reaction = { ['a'] = true, ['s'] = true, ['d'] = true, ['j'] = true, ['k'] = true, ['l'] = true, ['left'] = true, ['down'] = true, ['right'] = true }
 	self.keys_submit_score = { ['return'] = true}
 
-	self.submit_url = "http://ps0ke.de/misc/lua-nick-server/"
+	self.name_file = "name.txt"
+	self.submit_url = "http://ps0ke.de/code/tipptippreloaded/highscores/"
 	self.max_name_length = 12
 	self.blink_time = 0.75
 	self.cursor = "_"
+
+	if not love.filesystem.exists(self.name_file) then
+		love.filesystem.write(self.name_file, "")
+	end
 end
 
 function scorescreen:enter(previous, menu, hits, fails, score, multiplier, spree, max_spree, time)
@@ -33,7 +38,7 @@ function scorescreen:enter(previous, menu, hits, fails, score, multiplier, spree
 	self.timestring = string.format("%02d:%02d", self.time / 60, self.time % 60)
 	self.accuracy = math.floor((self.hits / (self.hits + self.fails)) * 10000 + 0.5) / 100 -- round the percentage to 2 digits
 
-	self.name = ""
+	self.name = love.filesystem.read(self.name_file)
 	self.insert_mode = false
 	self.saved = false
 	self.total_blink_time = 0
@@ -54,6 +59,8 @@ function scorescreen:update(dt)
 end
 
 function scorescreen:draw()
+	Effects:start_glow()
+
 	love.graphics.setFont(self.font_description)
 	love.graphics.setColor(self.color_description.r, self.color_description.g, self.color_description.b)
 	love.graphics.printf("score:", 10, 20, love.graphics.getWidth() - 20, "center")
@@ -82,6 +89,8 @@ function scorescreen:draw()
 	if self.insert_mode or self.saved then
 		love.graphics.printf(self.name..self.cursor_state, 10, 440, love.graphics.getWidth() - 20, "center")
 	end
+
+	Effects:stop_glow()
 end
 
 function scorescreen:keypressed(key)
@@ -98,14 +107,8 @@ function scorescreen:keypressed(key)
 
 		-- submit name + score to server on return
 		if key == "return" and self.name:len() > 0 then
-			response, code, header = http.request(
-				self.submit_url,
-				"name="..self.name.."&score="..tostring(self.score)
-			)
-			if code == 200 then
-				self.insert_mode = false
-				self.saved = true
-			end
+			love.filesystem.write(self.name_file, self.name)
+			self:submit()
 		end
 
 		if key == "escape" then
@@ -119,6 +122,22 @@ function scorescreen:keypressed(key)
 		elseif not self.keys_no_reaction[key] then
 			Gamestate.switch(self.menu)
 		end
+	end
+end
+
+function scorescreen:submit()
+	local params = ""
+	params = params.."name="..self.name
+	params = params.."&score="..tostring(self.score)
+	params = params.."&hits="..tostring(self.hits)
+	params = params.."&fails="..tostring(self.fails)
+	params = params.."&spree="..tostring(self.max_spree)
+	params = params.."&time="..tostring(self.time)
+
+	response, code, header = http.request(self.submit_url, params)
+	if code == 200 then
+		self.insert_mode = false
+		self.saved = true
 	end
 end
 
