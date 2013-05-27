@@ -11,8 +11,8 @@ function game:init()
 	self.scorescreen = require 'scorescreen'
 
 	self.hit_offset = math.rad(5)
-	self.controller_spawner_distance = math.rad(180)
-	self.killer_position = math.rad(360)
+	self.controller_spawner_distance = math.rad(120)
+	self.killer_position = math.rad(390)
 	self.angular_velocity_modifier = 0.003
 	self.time_between_bobbels_modifier = 0.003
 
@@ -83,8 +83,8 @@ function game:draw()
 		self.drawing:gamefield()
 
 		self.drawing:rotate_gamefield(self.rotation_angle, function()
-			self.drawing:bobbels(self.bobbels, self.special_activated, self:get_spawner_position())
-			self.drawing:controller(self.controller)
+			self.drawing:bobbels(self.bobbels, self.special_activated, self:get_spawner_position(), self:get_killer_position())
+			self.drawing:controller(self.controller, self:get_spawner_position(), self:get_killer_position())
 			self.drawing:origin(self:get_spawner_position(), self:get_killer_position())
 		end)
 
@@ -181,7 +181,7 @@ function game:terminate_bobbel()
 end
 
 function game:update_rotation(dt)
-	--self.rotation_angle = self.rotation_angle + -math.rad(5) * dt
+	self.rotation_angle = self.rotation_angle + dt * self:get_real_controller_velocity()
 end
 
 function game:update_controller(dt)

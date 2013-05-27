@@ -177,7 +177,7 @@ function Drawing:gamefield()
 	end
 end
 
-function Drawing:bobbels(bobbels, special_activated, spawner_position)
+function Drawing:bobbels(bobbels, special_activated, spawner_position, killer_position)
 	local bobbel_color = self.color_bobbel
 	if special_activated then
 		bobbel_color = self.color_bobbel_special_activated
@@ -187,15 +187,15 @@ function Drawing:bobbels(bobbels, special_activated, spawner_position)
 	for _, bbl in ipairs(bobbels) do
 		if bbl.special then
 			love.graphics.setColor(self.color_special_bobbel.r, self.color_special_bobbel.g, self.color_special_bobbel.b)
-			bbl:draw(self, self.special_bobbel_canvas)
+			bbl:draw(self, self.special_bobbel_canvas, spawner_position, killer_position)
 			love.graphics.setColor(bobbel_color.r, bobbel_color.g, bobbel_color.b)
 		else
-			bbl:draw(self, self.bobbel_canvas, spawner_position)
+			bbl:draw(self, self.bobbel_canvas, spawner_position, killer_position)
 		end
 	end
 end
 
-function Drawing:controller(controller)
+function Drawing:controller(controller, spawner_position, killer_position)
 	for _, cont in ipairs(controller) do
 		if cont.hit then
 			love.graphics.setColor(self.color_controller_pressed_hit.r ,self.color_controller_pressed_hit.g ,self.color_controller_pressed_hit.b)
@@ -204,7 +204,7 @@ function Drawing:controller(controller)
 		else
 			love.graphics.setColor(self.color_controller.r, self.color_controller.g, self.color_controller.b)
 		end
-		cont:draw(self, self.controller_canvas)
+		cont:draw(self, self.controller_canvas, spawner_position, killer_position)
 	end
 end
 
