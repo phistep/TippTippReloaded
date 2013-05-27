@@ -1,5 +1,4 @@
 require 'bobbel'
-require 'glowshapes'
 
 Menugame = {}
 Menugame.__index = Menugame

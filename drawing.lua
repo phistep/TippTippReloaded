@@ -1,5 +1,3 @@
-require 'glowshapes'
-
 Drawing = {}
 Drawing.__index = Drawing
 
