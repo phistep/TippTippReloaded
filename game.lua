@@ -46,6 +46,7 @@ function game:enter(game_menu)
 	self.menu = game_menu
 
 	self.pause = false
+	self.rotation_angle = 0
 	self.angular_velocity = math.rad(30)
 	self.time_between_bobbels = 0.9
 	self.controller_velocity = 0
@@ -80,9 +81,11 @@ function game:draw()
 	self.drawing:let_glow(function()
 		self.drawing:gamefield()
 
-		self.drawing:bobbels(self.bobbels, self.special_activated, self:get_spawner_position())
-		self.drawing:controller(self.controller)
-		self.drawing:origin(self:get_spawner_position())
+		self.drawing:rotate_gamefield(self.rotation_angle, function()
+			self.drawing:bobbels(self.bobbels, self.special_activated, self:get_spawner_position())
+			self.drawing:controller(self.controller)
+			self.drawing:origin(self:get_spawner_position())
+		end)
 
 		self.drawing:scoreboard(self:get_score())
 		self.drawing:muted(self.synth:is_muted())
@@ -102,6 +105,7 @@ function game:update(dt)
 
 		-- Updating gamevars
 		self:update_gamespeed(dt)
+		self:update_rotation(dt)
 
 		-- Updating bobbels
 		for _, bbl in pairs(self.bobbels) do
@@ -173,6 +177,10 @@ function game:terminate_bobbel()
 		self:remove_by_values(bbl.angle, bbl.track)
 		self:fail(bbl)
 	end
+end
+
+function game:update_rotation(dt)
+	self.rotation_angle = self.rotation_angle + 1.5 * self.controller_velocity * dt
 end
 
 function game:update_controller(dt)

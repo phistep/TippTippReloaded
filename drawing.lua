@@ -46,6 +46,7 @@ function Drawing.create()
 	drawing.controller_canvas = nil
 	drawing.glowing_canvas = nil
 	drawing.glowmap_canvas = nil
+	drawing.rotate_canvas = nil
 
 	drawing.blur = nil
 	drawing.bloom = nil
@@ -66,6 +67,7 @@ function Drawing:init()
 	self:create_bobbel_canvas()
 	self:create_special_bobbel_canvas()
 	self:create_controller_canvas()
+	self:create_rotate_canvas()
 	self:load_shaders()
 
 	love.graphics.setCanvas()
@@ -114,6 +116,10 @@ function Drawing:create_controller_canvas()
 	love.graphics.setBlendMode(bmode)
 end
 
+function Drawing:create_rotate_canvas()
+	self.rotate_canvas = love.graphics.newCanvas()
+end
+
 function Drawing:load_shaders()
 	self.glowing_canvas = love.graphics.newCanvas()
 	self.glowmap_canvas = love.graphics.newCanvas(0.5 * love.graphics.getWidth(), 0.5 * love.graphics.getHeight())
@@ -122,6 +128,7 @@ function Drawing:load_shaders()
 end
 
 function Drawing:let_glow(content)
+	local old_canvas = love.graphics.getCanvas()
 	local bmode = love.graphics.getBlendMode()
 
 	self.glowing_canvas:clear()
@@ -137,12 +144,27 @@ function Drawing:let_glow(content)
 	love.graphics.setBlendMode('alpha')
 	self.blur:send("blurMultiplyVec", {0.0, 1.0});
 	love.graphics.draw(self.glowmap_canvas)
-	love.graphics.setCanvas()
+	love.graphics.setCanvas(old_canvas)
 	love.graphics.setPixelEffect(self.bloom)
 	self.bloom:send("glowmap", self.glowmap_canvas);
 	love.graphics.draw(self.glowing_canvas)
 	love.graphics.setPixelEffect()
 	love.graphics.setBlendMode(bmode)
+end
+
+function Drawing:rotate_gamefield(angle, content)
+	local old_canvas = love.graphics.getCanvas()
+	local bmode = love.graphics.getBlendMode()
+	self.rotate_canvas:clear()
+
+	love.graphics.setCanvas(self.rotate_canvas)
+	love.graphics.setBlendMode('premultiplied')
+	content()
+
+	love.graphics.setBlendMode(bmode)
+	love.graphics.setCanvas(old_canvas)
+	love.graphics.setColor(255, 255, 255)
+	love.graphics.draw(self.rotate_canvas, love.graphics.getWidth()/2, love.graphics.getHeight()/2, angle, 1, 1, love.graphics.getWidth()/2, love.graphics.getHeight()/2)
 end
 
 function Drawing:gamefield()
