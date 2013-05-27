@@ -13,10 +13,15 @@ function scorescreen:init()
 	self.keys_no_reaction = { ['a'] = true, ['s'] = true, ['d'] = true, ['j'] = true, ['k'] = true, ['l'] = true, ['left'] = true, ['down'] = true, ['right'] = true }
 	self.keys_submit_score = { ['return'] = true}
 
+	self.name_file = "name.txt"
 	self.submit_url = "http://ps0ke.de/misc/lua-nick-server/"
 	self.max_name_length = 12
 	self.blink_time = 0.75
 	self.cursor = "_"
+
+	if not love.filesystem.exists(self.name_file) then
+		love.filesystem.write(self.name_file, "")
+	end
 end
 
 function scorescreen:enter(previous, menu, hits, fails, score, multiplier, spree, max_spree, time)
@@ -33,7 +38,7 @@ function scorescreen:enter(previous, menu, hits, fails, score, multiplier, spree
 	self.timestring = string.format("%02d:%02d", self.time / 60, self.time % 60)
 	self.accuracy = math.floor((self.hits / (self.hits + self.fails)) * 10000 + 0.5) / 100 -- round the percentage to 2 digits
 
-	self.name = ""
+	self.name = love.filesystem.read(self.name_file)
 	self.insert_mode = false
 	self.saved = false
 	self.total_blink_time = 0
@@ -98,6 +103,8 @@ function scorescreen:keypressed(key)
 
 		-- submit name + score to server on return
 		if key == "return" and self.name:len() > 0 then
+			love.filesystem.write(self.name_file, self.name)
+
 			response, code, header = http.request(
 				self.submit_url,
 				"name="..self.name.."&score="..tostring(self.score)
