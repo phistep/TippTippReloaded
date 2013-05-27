@@ -81,7 +81,7 @@ function Drawing:create_bobbel_canvas()
 	love.graphics.setLineWidth(self.bobbel_line_width)
 
 	love.graphics.setBlendMode('premultiplied')
-	glowShape('circle', 'line', self.bobbel_line_width, self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
+	Effects:glowShape('circle', 'line', self.bobbel_line_width, self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
 	love.graphics.setBlendMode(bmode)
 end
 
@@ -95,7 +95,7 @@ function Drawing:create_special_bobbel_canvas()
 	love.graphics.setLineWidth(self.special_bobbel_line_width)
 
 	love.graphics.setBlendMode('premultiplied')
-	glowShape('rectangle', 'line', self.special_bobbel_line_width, 5, 5, 2*(self.bobbel_radius-5), 2*(self.bobbel_radius-5))
+	Effects:glowShape('rectangle', 'line', self.special_bobbel_line_width, 5, 5, 2*(self.bobbel_radius-5), 2*(self.bobbel_radius-5))
 	love.graphics.setBlendMode(bmode)
 end
 
@@ -108,7 +108,7 @@ function Drawing:create_controller_canvas()
 	love.graphics.setColor(self.color_controller_inside_canvas.r, self.color_controller_inside_canvas.g, self.color_controller_inside_canvas.b)
 
 	love.graphics.setBlendMode('premultiplied')
-	glowShape('circle', 'fill', self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
+	Effects:glowShape('circle', 'fill', self.bobbel_radius, self.bobbel_radius, self.bobbel_radius-5, 20)
 	love.graphics.setBlendMode(bmode)
 end
 
@@ -148,7 +148,7 @@ function Drawing:gamefield()
 	love.graphics.setLineWidth(self.gamefield_line_width)
 
 	for i = 0, 2 do
-		--glowShape('circle', 'line', self.gamefield_line_width, self.center.x, self.center.y, self.gamefield_radius - i * self.track_distance)
+		--Effects:glowShape('circle', 'line', self.gamefield_line_width, self.center.x, self.center.y, self.gamefield_radius - i * self.track_distance)
 		love.graphics.circle('line', self.center.x, self.center.y, self.gamefield_radius - i * self.track_distance)
 	end
 end
@@ -234,7 +234,7 @@ function Drawing:muted(muted)
 	)
 	if not muted then
 		for i = 5, 13, 4 do
-			drawArc(x + 10, y + 10, i, math.rad(-45), math.rad(45), 20)
+			Effects:drawArc(x + 10, y + 10, i, math.rad(-45), math.rad(45), 20)
 		end
 	end
 end
@@ -269,7 +269,7 @@ function Drawing:debug(game)
 		local margin = 5
 
 		love.graphics.setColor(30, 30, 30, 100)
-		glowShape('rectangle', 'fill', xcoord, ycoord, boxwidth, boxheight)
+		Effects:glowShape('rectangle', 'fill', xcoord, ycoord, boxwidth, boxheight)
 
 		xcoord = xcoord + margin
 		boxwidth = boxwidth - 2 * margin
