@@ -129,7 +129,7 @@ function game:update(dt)
 			self:change_controller_angle(dt * -self.key_forward_movement)
 		end
 
-		if love.keyboard.isDown(unpack(self.keys_back)) then
+		if love.keyboard.isDown(unpack(self.keys_back)) and self.debug then
 			self:change_controller_angle(dt * self.key_forward_movement)
 		end
 
