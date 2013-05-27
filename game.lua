@@ -12,10 +12,11 @@ function game:init()
 
 	self.hit_offset = math.rad(5)
 	self.controller_spawner_distance = math.rad(180)
+	self.killer_position = math.rad(360)
 	self.angular_velocity_modifier = 0.003
 	self.time_between_bobbels_modifier = 0.003
 
-	self.hit_acceleration = 0.02
+	self.hit_acceleration = 0.03
 	self.fail_acceleration = -2 * self.hit_acceleration
 	self.max_velocity = 3 * self.hit_acceleration
 	self.min_velocity = -8 * self.hit_acceleration
@@ -84,7 +85,7 @@ function game:draw()
 		self.drawing:rotate_gamefield(self.rotation_angle, function()
 			self.drawing:bobbels(self.bobbels, self.special_activated, self:get_spawner_position())
 			self.drawing:controller(self.controller)
-			self.drawing:origin(self:get_spawner_position())
+			self.drawing:origin(self:get_spawner_position(), self:get_killer_position())
 		end)
 
 		self.drawing:scoreboard(self:get_score())
@@ -109,7 +110,7 @@ function game:update(dt)
 
 		-- Updating bobbels
 		for _, bbl in pairs(self.bobbels) do
-			bbl:update(self, dt, self.controller_velocity)
+			bbl:update(self, dt, self:get_real_controller_velocity())
 		end
 
 		-- Spawning new bobbels
@@ -138,7 +139,7 @@ function game:update(dt)
 end
 
 function game:update_gamespeed(dt)
-	local modifier = (360 - math.deg(self.controller[1].angle)) / 360 + 0.5
+	local modifier = 1 - (self:get_controller_angle() - self:get_gamefield_start()) / self:get_gamefield_width() + 0.5
 	self.angular_velocity = self.angular_velocity + dt * self.angular_velocity_modifier * modifier
 	self.time_between_bobbels = self.time_between_bobbels - dt * self.time_between_bobbels_modifier * modifier
 end
@@ -172,7 +173,7 @@ function game:spawn_special(bbl)
 end
 
 function game:terminate_bobbel()
-	local old_bobbels = self:get_by_angle(self.bobbels, math.rad(360), math.rad(360))
+	local old_bobbels = self:get_by_angle(self.bobbels, self:get_gamefield_end(), math.rad(360))
 	for _, bbl in pairs(old_bobbels) do
 		self:remove_by_values(bbl.angle, bbl.track)
 		self:fail(bbl)
@@ -180,17 +181,11 @@ function game:terminate_bobbel()
 end
 
 function game:update_rotation(dt)
-	self.rotation_angle = self.rotation_angle + 1.5 * self.controller_velocity * dt
+	--self.rotation_angle = self.rotation_angle + -math.rad(5) * dt
 end
 
 function game:update_controller(dt)
-	local movement_modifier = 1
-	if self.controller_velocity > 0 then
-		movement_modifier = math.deg(self.controller[1].angle) / 360 + 0.5
-	else
-		movement_modifier = (360 - math.deg(self.controller[1].angle)) / 360 + 0.5
-	end
-	self:change_controller_angle(dt * -self.controller_velocity * movement_modifier)
+	self:change_controller_angle(dt * -self:get_real_controller_velocity())
 end
 
 function game:remove_by_values(angle, track)
@@ -264,16 +259,44 @@ function game:get_by_angle(bobbels, angle, range)
 	return ret_bbls
 end
 
+function game:get_controller_angle()
+	return self.controller[1].angle
+end
+
+function game:get_real_controller_velocity()
+	local movement_modifier = (self:get_controller_angle() - self:get_gamefield_start()) / self:get_gamefield_width()
+	if self.controller_velocity < 0 then
+		movement_modifier = 1 - movement_modifier + 0.5
+	end
+	return self.controller_velocity * movement_modifier
+end
+
 function game:get_spawner_position()
 	return self.controller[1].angle - self.controller_spawner_distance
+end
+
+function game:get_killer_position()
+	return self.killer_position
+end
+
+function game:get_gamefield_width()
+	return math.rad(360) - self.controller_spawner_distance
+end
+
+function game:get_gamefield_start()
+	return self.killer_position % math.rad(360) + self.controller_spawner_distance
+end
+
+function game:get_gamefield_end()
+	return self.killer_position
 end
 
 function game:change_controller_angle(delta_angle)
 	for _, bbl in ipairs(self.controller) do
 		local newangle = bbl.angle + delta_angle
-		if newangle > math.rad(360) then
+		if newangle > self:get_gamefield_end() then
 			self:lost()
-		elseif newangle > math.rad(0) then
+		elseif newangle > self:get_gamefield_start() then
 			bbl.angle = newangle
 		else
 			self:set_controller_velocity(0)
