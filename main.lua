@@ -1,5 +1,6 @@
 Gamestate = require 'hump.gamestate'
 Effects = require 'effects'
+require 'msm'
 
 local menu = require 'menu'
 

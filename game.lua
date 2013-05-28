@@ -49,7 +49,7 @@ function game:enter(game_menu)
 	self.pause = false
 	self.rotation_angle = 0
 	self.angular_velocity = math.rad(30)
-	self.time_between_bobbels = 0.9
+	self.time_between_bobbels = 0.666667
 	self.controller_velocity = 0
 
 	self.special_bobbel_spawned = 0
@@ -100,6 +100,7 @@ function game:draw()
 end
 
 function game:update(dt)
+	love.audio.update()
 	if not self.pause then
 		-- Updating time
 		self.total_time = self.total_time + dt
@@ -141,7 +142,7 @@ end
 function game:update_gamespeed(dt)
 	local modifier = 1 - (self:get_controller_angle() - self:get_gamefield_start()) / self:get_gamefield_width() + 0.5
 	self.angular_velocity = self.angular_velocity + dt * self.angular_velocity_modifier * modifier
-	self.time_between_bobbels = self.time_between_bobbels - dt * self.time_between_bobbels_modifier * modifier
+	--self.time_between_bobbels = self.time_between_bobbels - dt * self.time_between_bobbels_modifier * modifier
 end
 
 function game:spawn_bobbel(dt)
@@ -228,6 +229,12 @@ function game:keypressed(key)
 	end
 	if self.keys_debugging[key] then
 		self.debug = not self.debug
+	end
+	if key == 'z' then
+		love.audio.play(self.synth.bgm)
+	end
+	if key == 'x' then
+		love.audio.pause(self.synth.bgm)
 	end
 end
 

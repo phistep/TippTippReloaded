@@ -24,6 +24,8 @@ function Synth.create()
 		synth:createSource("g"),
 	}
 
+	synth.bgm = love.audio.play("bg_all.wav", "stream", true)
+
 	return synth
 end
 
