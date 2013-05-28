@@ -76,6 +76,7 @@ function scorescreen:draw()
 
 	if self.saved then
 		love.graphics.printf("saved!", 10, 475, love.graphics.getWidth() - 20, "center")
+		love.graphics.printf("view highscores at: "..self.submit_url, 10, 525, love.graphics.getWidth() - 20, "center")
 	end
 
 	love.graphics.setColor(self.color_scoreboard.r, self.color_scoreboard.g, self.color_scoreboard.b)
