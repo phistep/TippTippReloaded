@@ -49,7 +49,7 @@ function game:enter(game_menu)
 	self.pause = false
 	self.rotation_angle = 0
 	self.angular_velocity = math.rad(30)
-	self.time_between_bobbels = 0.666667
+	self.time_between_bobbels = 60 / self.synth.bpm -- 60 / bpm
 	self.controller_velocity = 0
 
 	self.special_bobbel_spawned = 0
@@ -64,6 +64,7 @@ function game:enter(game_menu)
 
 	self.score = Scoreboard.create()
 	self.spawner = Spawner.create(self.time_between_bobbels)
+	self.synth:toggle_music('play')
 
 	self.bobbels = {}
 	self.controller = {}
@@ -76,6 +77,10 @@ function game:enter(game_menu)
 	self.controller[1].keys = { d = true, l = true, right = true }
 	self.controller[2].keys = { s = true, k = true, down = true }
 	self.controller[3].keys = { a = true, j = true, left = true }
+end
+
+function game:leave()
+	self.synth:toggle_music('stop')
 end
 
 function game:draw()
@@ -146,14 +151,16 @@ function game:update_gamespeed(dt)
 end
 
 function game:spawn_bobbel(dt)
-	self.spawner:update(dt, self.time_between_bobbels)
-	local new_tracks = self.spawner:new_bobbel_track()
-	if new_tracks then
-		for trackno, tdiff in pairs(new_tracks) do
-			if trackno >= 0 and trackno <= 2 then
-				local new_bobbel = Bobbel.create(self:get_spawner_position() + tdiff * self.angular_velocity, trackno)
-				new_bobbel = self:spawn_special(new_bobbel)
-				table.insert(self.bobbels, new_bobbel)
+	if self.total_time > self.synth.offset - self:get_time_spawner_to_controller() then
+		self.spawner:update(dt, self.time_between_bobbels)
+		local new_tracks = self.spawner:new_bobbel_track()
+		if new_tracks then
+			for trackno, tdiff in pairs(new_tracks) do
+				if trackno >= 0 and trackno <= 2 then
+					local new_bobbel = Bobbel.create(self:get_spawner_position() + tdiff * self.angular_velocity, trackno)
+					new_bobbel = self:spawn_special(new_bobbel)
+					table.insert(self.bobbels, new_bobbel)
+				end
 			end
 		end
 	end
@@ -223,6 +230,7 @@ function game:keypressed(key)
 	end
 	if self.keys_pause[key] then
 		self.pause = not self.pause
+		self.synth:toggle_music()
 	end
 	if self.keys_mute[key] then
 		self.synth:toggle_mute()
@@ -230,11 +238,8 @@ function game:keypressed(key)
 	if self.keys_debugging[key] then
 		self.debug = not self.debug
 	end
-	if key == 'z' then
-		love.audio.play(self.synth.bgm)
-	end
 	if key == 'x' then
-		love.audio.pause(self.synth.bgm)
+		self.synth:toggle_music()
 	end
 end
 
@@ -297,6 +302,10 @@ end
 
 function game:get_gamefield_end()
 	return self.killer_position
+end
+
+function game:get_time_spawner_to_controller()
+	return self.controller_spawner_distance / self.angular_velocity
 end
 
 function game:change_controller_angle(delta_angle)
