@@ -5,7 +5,7 @@ Synth.__index = Synth
 
 local trackname = 'tracks/'..'tipptipp.ogg'
 local beats_per_minute = 90
-local offset = 5
+local offset = 4.8
 
 function Synth.create()
 	local synth = {}

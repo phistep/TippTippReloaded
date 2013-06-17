@@ -49,7 +49,7 @@ function game:enter(game_menu)
 	self.pause = false
 	self.rotation_angle = 0
 	self.angular_velocity = math.rad(30)
-	self.time_between_bobbels = 60 / self.synth.bpm -- 60 / bpm
+	self.time_between_beats = 60 / self.synth.bpm
 	self.controller_velocity = 0
 
 	self.special_bobbel_spawned = 0
@@ -63,7 +63,8 @@ function game:enter(game_menu)
 	self.total_time = 0
 
 	self.score = Scoreboard.create()
-	self.spawner = Spawner.create(self.time_between_bobbels)
+	self.spawner = Spawner.create(self.time_between_beats / 2)
+	self.t_music = self.synth.music:tell()
 	self.synth:toggle_music('play')
 
 	self.bobbels = {}
@@ -108,6 +109,11 @@ function game:update(dt)
 	love.audio.update()
 	if not self.pause then
 		-- Updating time
+		local new_t_music = self.synth.music:tell()
+		local dt_music = new_t_music - self.t_music
+		self.t_music = new_t_music
+		dt = dt_music
+
 		self.total_time = self.total_time + dt
 
 		-- Updating gamevars
@@ -152,7 +158,7 @@ end
 
 function game:spawn_bobbel(dt)
 	if self.total_time > self.synth.offset - self:get_time_spawner_to_controller() then
-		self.spawner:update(dt, self.time_between_bobbels)
+		self.spawner:update(dt, self.time_between_beats / 2)
 		local new_tracks = self.spawner:new_bobbel_track()
 		if new_tracks then
 			for trackno, tdiff in pairs(new_tracks) do

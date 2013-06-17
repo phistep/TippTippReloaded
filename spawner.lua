@@ -12,11 +12,14 @@ function Spawner.create(time_between_bobbels)
 	spawner.active_function = nil
 	spawner.func_terminated = false
 	spawner.functions = {
+		--[[
 		spawner.random,
 		spawner.linear,
 		spawner.saw,
 		spawner.triangle,
 		spawner.oscilator,
+		--]]
+		spawner.music,
 	}
 
 	spawner:pick_random_func()
@@ -31,7 +34,6 @@ function Spawner:pick_random_func()
 	self.func_terminated = false
 end
 	
-
 function Spawner:update(dt, time_between_bobbels)
 	self.time = self.time + dt
 	self.time_between_bobbels = time_between_bobbels or self.time_between_bobbels
@@ -48,6 +50,56 @@ function Spawner:new_bobbel_track()
 		self.func_terminated = terminated
 	end
 	return tracks
+end
+
+function Spawner:to_beat(t)
+	return t / self.time_between_bobbels
+end
+
+function Spawner:to_t(beat)
+	return beat * self.time_between_bobbels
+end
+
+function Spawner:rnd(tracks, tdiff)
+	tdiff = tdiff or 0
+	if tracks == 1 then
+		return { [math.random(0, 2)] = tdiff }
+	elseif tracks == 2 then
+		local blank_track = math.random(0, 2)
+		return { [(blank_track + 1) % 3] = tdiff, [(blank_track + 2) % 3] = tdiff }
+	elseif tracks == 3 then
+		return { [0] = tdiff, [1] = tdiff, [2] = tdiff }
+	else
+		return {}
+	end
+end
+
+function Spawner:music()
+	local t = self.time - self.last_new_function
+	local beat = math.floor(self:to_beat(self.last_bobbel))
+	local limit = self:to_t(beat + 1)
+	local tdiff = t - limit
+
+	if tdiff >= 0 then
+		self.last_bobbel = t
+		if beat < 16 then
+			local subbeat = beat % 4
+			if subbeat == 0 then
+				return self:rnd(2, tdiff)
+			elseif subbeat == 1 then
+				return {}
+			elseif subbeat == 2  or subbeat == 3 then
+				return self:rnd(1, tdiff)
+			end
+		elseif beat < 100 then
+			local subbeat = beat % 4
+			if subbeat == 0 then
+				return self:rnd(2, tdiff)
+			elseif subbeat == 1 or subbeat == 2  or subbeat == 3 then
+				return self:rnd(1, tdiff)
+			end
+		end
+	end
 end
 
 -- ? ? ?
