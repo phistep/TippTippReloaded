@@ -126,10 +126,20 @@ function Spawner:music()
 			elseif subbeat < 7 then
 				return self:rnd(1, tdiff)
 			elseif subbeat < 14 then
+				--[[
+				if subbeat == 8 or subbeat == 12 then
+					return self:rnd(2, tdiff)
+				end
+				--]]
 				return {}
 			elseif subbeat < 15 then
 				return self:rnd(1, tdiff)
 			elseif subbeat < 18 then
+				--[[
+				if subbeat == 16 then
+					return self:rnd(2, tdiff)
+				end
+				--]]
 				return {}
 			elseif subbeat < 19 then
 				return self:rnd(1, tdiff)
@@ -140,8 +150,14 @@ function Spawner:music()
 			elseif subbeat < 22 then
 				return {}
 			elseif subbeat < 23 then
+				--return self:rnd(1, tdiff)
 				return self:rnd(2, tdiff)
 			elseif subbeat < 26 then
+				--[[
+				if subbeat == 24 then
+					return self:rnd(2, tdiff)
+				end
+				--]]
 				return {}
 			elseif subbeat < 27 then
 				return self:rnd(1, tdiff)
@@ -154,6 +170,7 @@ function Spawner:music()
 			elseif subbeat < 31 then
 				return self:rnd(1, tdiff)
 			elseif subbeat < 32 then
+				--return self:rnd(2, tdiff)
 				return {}
 			end
 		elseif beat < 162 then
