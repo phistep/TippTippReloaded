@@ -82,7 +82,10 @@ function Spawner:music()
 
 	if tdiff >= 0 then
 		self.last_bobbel = t
+		print(math.floor(self:to_beat(t-4)))
 		if beat < 16 then
+			if beat == 0 then return self:rnd(1, tdiff) end
+
 			local subbeat = beat - 0
 			subbeat = subbeat % 4
 			if subbeat == 0 then
@@ -92,14 +95,24 @@ function Spawner:music()
 			elseif subbeat == 2  or subbeat == 3 then
 				return self:rnd(1, tdiff)
 			end
-		elseif beat < 98 then
+		elseif beat < 34 then
 			local subbeat = beat - 16
 			subbeat = subbeat % 4
-			if subbeat == 1 then
+			if subbeat == 1 or subbeat == 3 then
+				return self:rnd(1, tdiff)
+			elseif subbeat == 0 then
 				return self:rnd(2, tdiff)
-			elseif subbeat == 2 then
+			end
+		elseif beat < 98 then
+			if beat == 36 then return {} end
+
+			local subbeat = beat - 34
+			subbeat = subbeat % 4
+			if subbeat == 3 then
+				return self:rnd(2, tdiff)
+			elseif subbeat == 0 then
 				return {}
-			elseif subbeat == 0 or subbeat == 3 then
+			elseif subbeat == 2 or subbeat == 1 then
 				return self:rnd(1, tdiff)
 			end
 		elseif beat < 130 then
